@@ -1,0 +1,38 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 2012
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VPGUI", "VPGUI\VPGUI.csproj", "{16079285-BE39-4A12-9D2F-39990C64F571}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "VPSharp", "VPSharp\VPSharp.csproj", "{E970C72D-303F-44D7-B34D-FC72025ACB83}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "EnumTools", "EnumTools\EnumTools.csproj", "{2CCEBD48-4F1E-4910-A671-6087ABCCEE6F}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Ookii.Dialogs.Wpf", "Ookii.Dialogs.Wpf\Ookii.Dialogs.Wpf.csproj", "{D01B1D20-8F5B-4834-8E5C-C7EC6DD587D4}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{16079285-BE39-4A12-9D2F-39990C64F571}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{16079285-BE39-4A12-9D2F-39990C64F571}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{16079285-BE39-4A12-9D2F-39990C64F571}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{16079285-BE39-4A12-9D2F-39990C64F571}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E970C72D-303F-44D7-B34D-FC72025ACB83}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E970C72D-303F-44D7-B34D-FC72025ACB83}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E970C72D-303F-44D7-B34D-FC72025ACB83}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E970C72D-303F-44D7-B34D-FC72025ACB83}.Release|Any CPU.Build.0 = Release|Any CPU
+		{2CCEBD48-4F1E-4910-A671-6087ABCCEE6F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{2CCEBD48-4F1E-4910-A671-6087ABCCEE6F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{2CCEBD48-4F1E-4910-A671-6087ABCCEE6F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{2CCEBD48-4F1E-4910-A671-6087ABCCEE6F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{D01B1D20-8F5B-4834-8E5C-C7EC6DD587D4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{D01B1D20-8F5B-4834-8E5C-C7EC6DD587D4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{D01B1D20-8F5B-4834-8E5C-C7EC6DD587D4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{D01B1D20-8F5B-4834-8E5C-C7EC6DD587D4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+EndGlobal

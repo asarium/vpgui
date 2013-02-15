@@ -1,0 +1,95 @@
+﻿<UserControl x:Class="VPGUI.UserControls.VpDirectoryControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+             xmlns:models="clr-namespace:VPGUI.Models"
+             mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
+                <ResourceDictionary
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <Grid.RowDefinitions>
+            <RowDefinition Height="Auto" />
+            <RowDefinition Height="*" />
+        </Grid.RowDefinitions>
+
+        <ItemsControl Grid.Row="0"
+                      ItemsSource="{Binding TreeViewModel.SelectedItem, Converter={StaticResource TreeItemToHierarchy}}"
+                      Margin="5">
+            <ItemsControl.ItemsPanel>
+                <ItemsPanelTemplate>
+                    <StackPanel Orientation="Horizontal" />
+                </ItemsPanelTemplate>
+            </ItemsControl.ItemsPanel>
+            <ItemsControl.ItemTemplate>
+                <DataTemplate DataType="models:VPTreeEntryViewModel">
+                    <StackPanel Orientation="Horizontal">
+                        <TextBlock Text="{Binding Name}" Style="{DynamicResource MetroTextBlock}" FontSize="14" />
+
+                        <TextBlock Text="/" Margin="4, 0, 4, 0" Style="{DynamicResource MetroTextBlock}" FontSize="14" />
+                    </StackPanel>
+                </DataTemplate>
+            </ItemsControl.ItemTemplate>
+        </ItemsControl>
+
+        <ListView ItemsSource="{Binding DirectoryListModel.Entries}" Margin="0" Grid.Row="1"
+                  AllowDrop="True" DragEnter="vpListView_DragEnter_1"
+                  DragOver="vpListView_DragOver_1" Drop="vpListView_Drop_1" Height="Auto"
+                  Style="{StaticResource VirtualisedListView}" SelectionMode="Extended">
+            <ListView.InputBindings>
+            </ListView.InputBindings>
+            <ListView.ItemContainerStyle>
+                <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="FontWeight" Value="Normal" />
+
+                    <EventSetter Event="MouseDoubleClick" Handler="vpListViewEntry_MouseDoubleClick_1" />
+                </Style>
+            </ListView.ItemContainerStyle>
+
+            <ListView.View>
+                <GridView AllowsColumnReorder="False"
+                          d:DataContext="{d:DesignInstance models:VpListEntryViewModel}">
+                    <GridViewColumn Width="120" Header="Name">
+                        <GridViewColumn.CellTemplate>
+                            <DataTemplate>
+                                <VirtualizingStackPanel Orientation="Horizontal">
+                                    <Image Width="16" Height="16" Stretch="Uniform"
+                                           Source="{Binding EntryIcon}" />
+                                    <TextBlock Text="{Binding Name}" Margin="4,2,4,2" />
+
+                                    <!-- Editing support -->
+                                    <TextBox Text="{Binding Name, Mode=TwoWay}"
+                                             Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisiblity}}"
+                                             Style="{DynamicResource MetroTextBox}"
+                                             LostFocus="ListViewEditBox_OnLostFocus" />
+                                </VirtualizingStackPanel>
+                            </DataTemplate>
+                        </GridViewColumn.CellTemplate>
+                    </GridViewColumn>
+                    <GridViewColumn Width="120" Header="Size"
+                                    DisplayMemberBinding="{Binding FileSize}">
+                    </GridViewColumn>
+                    <GridViewColumn Width="120" Header="Last Edit"
+                                    DisplayMemberBinding="{Binding LastEdit}">
+                    </GridViewColumn>
+                </GridView>
+            </ListView.View>
+        </ListView>
+    </Grid>
+</UserControl>
