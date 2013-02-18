@@ -435,7 +435,7 @@ namespace VPGUI.Models
                     if (task.Exception != null)
                     {
                         this.InteractionService.ShowMessage(MessageType.Error, "Error while reading file",
-                                                            "Error while reading VP file:\n" +
+                                                            "Error while reading VP file:" +
                                                             Util.GetAggregateExceptionMessage(task.Exception));
 
                         this.CurrentVpFile = null;
@@ -444,24 +444,9 @@ namespace VPGUI.Models
                     }
                     else
                     {
-                        try
-                        {
-                            this.CurrentVpFile = task.Result;
-                        }
-                        catch (Exception e)
-                        {
-                            Console.WriteLine(e);
-                            throw;
-                        }
+                        this.CurrentVpFile = task.Result;
 
-                        if (this.CurrentVpFile.FileMessages.Messages.Count > 0)
-                        {
-                            this.FileMessagesShown = true;
-                        }
-                        else
-                        {
-                            this.FileMessagesShown = false;
-                        }
+                        this.FileMessagesShown = this.CurrentVpFile.FileMessages.Messages.Count > 0;
 
                         this.StatusMessage = "VP-file successfully loaded.";
                     }
