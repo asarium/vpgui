@@ -291,9 +291,16 @@ namespace VPSharp
                     {
                         var directory = new VPDirectoryEntry(currentParent) {DirEntry = entry, ChangedOverride = false};
 
-                        currentParent.AddChild(directory);
+                        try
+                        {
+                            currentParent.AddChild(directory);
 
-                        currentParent = directory;
+                            currentParent = directory;
+                        }
+                        catch (ArgumentException e)
+                        {
+                            FileMessages.AddMessage(new VPFileMessage(MessageType.WARNING, "Couldn't add directory \"" + entry.name + "\": " + e.Message));
+                        }
                     }
                 }
                 else
@@ -301,7 +308,14 @@ namespace VPSharp
                     // This is a file
                     var fileEntry = new VPFileEntry(currentParent) {DirEntry = entry, ChangedOverride = false};
 
-                    currentParent.AddChild(fileEntry);
+                    try
+                    {
+                        currentParent.AddChild(fileEntry);
+                    }
+                    catch (ArgumentException e)
+                    {
+                        FileMessages.AddMessage(new VPFileMessage(MessageType.WARNING, "Couldn't add file \""+ entry.name +"\": " + e.Message));
+                    }
                 }
             }
         }
