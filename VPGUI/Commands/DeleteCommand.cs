@@ -15,11 +15,21 @@ namespace VPGUI.Commands
 
         public override void Execute(object parameter)
         {
+            var deleted = new LinkedList<VpListEntryViewModel>();
+
             foreach (var selected in ApplicationModel.DirectoryListModel.SelectedEntries)
             {
                 var entry = selected.Entry;
 
-                entry.Parent.RemoveChild(entry);
+                if (entry.Parent.RemoveChild(entry))
+                {
+                    deleted.AddLast(selected);
+                }
+            }
+
+            foreach (var item in deleted)
+            {
+                item.IsSelected = false;
             }
         }
     }
