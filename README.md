@@ -1,4 +1,4 @@
-# VP-GUI: A new VP-viewer application
+# VP-GUI: Yet another VP-viewer application
 This project aims to create a new viewer application for the **V**olition **P**ackage file format.
 
 # Requirements
