@@ -4,11 +4,24 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              xmlns:models="clr-namespace:VPGUI.Models" x:Class="VPGUI.UserControls.OptionsControl"
              xmlns:e="clr-namespace:EnumTools;assembly=EnumTools"
              xmlns:settings="clr-namespace:VPGUI.Utilities.Settings"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
              d:DesignHeight="100" d:DesignWidth="500">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary 
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
+                <ResourceDictionary 
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
     <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
@@ -63,32 +76,18 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
+                        
+                        <controls:ToggleSwitch IsChecked="{Binding CreateBackups}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center"
+                                               HorizontalAlignment="Stretch" OnLabel="Enabled" OffLabel="Disabled" Header="Create backups" Foreground="{DynamicResource BlackBrush}" />
 
-                        <Label Content="Extraction Location:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="1" Grid.Row="0" Margin="5" SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
+                        <Label Content="Extraction Location:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" />
+                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="5" SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
                               SelectedValuePath="Value" ToolTip="Specifies the location where files are extracted before they are opened">
                             <ComboBox.ItemsSource>
                                 <e:EnumItemList EnumType="{x:Type settings:ExtractLocation}">
                                     <e:EnumItem Value="WorkingDir" Text="In the application directory" />
                                     <e:EnumItem Value="VpLocation" Text="In the VP directory"
                                                 DisplayValue="The file will be placed at the path it had in the VP-file" />
-                                </e:EnumItemList>
-                            </ComboBox.ItemsSource>
-                            <ComboBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type e:EnumItem}" >
-                                    <TextBlock Text="{Binding Text, Mode=OneTime}" ToolTip="{Binding DisplayValue, Mode=OneTime}" />
-                                </DataTemplate>
-                            </ComboBox.ItemTemplate>
-                        </ComboBox>
-                        
-                        <Label Content="Backup mode:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="5" SelectedValue="{Binding BackupMode, Mode=TwoWay}"
-                              SelectedValuePath="Value">
-                            <ComboBox.ItemsSource>
-                                <e:EnumItemList EnumType="{x:Type settings:BackupMode}">
-                                    <e:EnumItem Value="CreateBackups" Text="Create backups" 
-                                                DisplayValue="When a VP-file is going to be overwritten it will be copied to a secure location" />
-                                    <e:EnumItem Value="NoBackups" Text="Don't create backups" />
                                 </e:EnumItemList>
                             </ComboBox.ItemsSource>
                             <ComboBox.ItemTemplate>

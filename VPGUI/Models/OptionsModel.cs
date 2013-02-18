@@ -64,11 +64,11 @@ namespace VPGUI.Models
             set { this._settings.ExtractLocation = value; }
         }
 
-        public BackupMode BackupMode
+        public bool CreateBackups
         {
-            get { return this._settings.BackupMode; }
+            get { return this._settings.CreateBackups; }
 
-            set { this._settings.BackupMode = value; }
+            set { this._settings.CreateBackups = value; }
         }
 
         #region INotifyPropertyChanged Members

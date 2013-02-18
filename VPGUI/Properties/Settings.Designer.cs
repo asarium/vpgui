@@ -60,13 +60,13 @@ namespace VPGUI.Properties {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("CreateBackups")]
-        public global::VPGUI.Utilities.Settings.BackupMode BackupMode {
+        [global::System.Configuration.DefaultSettingValueAttribute("True")]
+        public bool CreateBackups {
             get {
-                return ((global::VPGUI.Utilities.Settings.BackupMode)(this["BackupMode"]));
+                return ((bool)(this["CreateBackups"]));
             }
             set {
-                this["BackupMode"] = value;
+                this["CreateBackups"] = value;
             }
         }
     }

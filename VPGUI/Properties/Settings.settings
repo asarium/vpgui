@@ -1,20 +1,18 @@
 ﻿<?xml version='1.0' encoding='utf-8'?>
-
-<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)"
-              GeneratedClassNamespace="VPGUI.Properties" GeneratedClassName="Settings">
-	<Profiles />
-	<Settings>
-		<Setting Name="ExtractLocation" Type="VPGUI.Utilities.Settings.ExtractLocation" Scope="User">
-			<Value Profile="(Default)">WorkingDir</Value>
-		</Setting>
-		<Setting Name="Theme" Type="MahApps.Metro.Theme" Scope="User">
-			<Value Profile="(Default)">Dark</Value>
-		</Setting>
-		<Setting Name="ThemeAccent" Type="MahApps.Metro.Accent" Scope="User">
-			<Value Profile="(Default)" />
-		</Setting>
-		<Setting Name="BackupMode" Type="VPGUI.Utilities.Settings.BackupMode" Scope="User">
-			<Value Profile="(Default)">CreateBackups</Value>
-		</Setting>
-	</Settings>
+<SettingsFile xmlns="http://schemas.microsoft.com/VisualStudio/2004/01/settings" CurrentProfile="(Default)" GeneratedClassNamespace="VPGUI.Properties" GeneratedClassName="Settings">
+  <Profiles />
+  <Settings>
+    <Setting Name="ExtractLocation" Type="VPGUI.Utilities.Settings.ExtractLocation" Scope="User">
+      <Value Profile="(Default)">WorkingDir</Value>
+    </Setting>
+    <Setting Name="Theme" Type="MahApps.Metro.Theme" Scope="User">
+      <Value Profile="(Default)">Dark</Value>
+    </Setting>
+    <Setting Name="ThemeAccent" Type="MahApps.Metro.Accent" Scope="User">
+      <Value Profile="(Default)" />
+    </Setting>
+    <Setting Name="CreateBackups" Type="System.Boolean" Scope="User">
+      <Value Profile="(Default)">True</Value>
+    </Setting>
+  </Settings>
 </SettingsFile>
