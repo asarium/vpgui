@@ -78,7 +78,7 @@
                         </Grid.RowDefinitions>
                         
                         <controls:ToggleSwitch IsChecked="{Binding CreateBackups}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center"
-                                               HorizontalAlignment="Stretch" OnLabel="Enabled" OffLabel="Disabled" Header="Create backups" Foreground="{DynamicResource BlackBrush}" />
+                                               HorizontalAlignment="Stretch" OnLabel="Enabled" OffLabel="Disabled" Header="Backup creation" Foreground="{DynamicResource BlackBrush}" />
 
                         <Label Content="Extraction Location:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" />
                         <ComboBox Grid.Column="1" Grid.Row="1" Margin="5" SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
