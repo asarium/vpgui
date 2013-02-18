@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
+using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Text;
 
@@ -15,9 +17,18 @@ namespace VPSharp.Entries
         private string _name;
         private VPDirectoryEntry _parent;
 
+        private readonly Dictionary<string, object> _originalValues = new Dictionary<string, object>();
+        private readonly Dictionary<string, Predicate<object>> _changedCheckers = new Dictionary<string, Predicate<object>>();
+        private readonly Dictionary<string, bool> _changedStatus = new Dictionary<string, bool>();
+
+
         internal VPEntry(VPFile containing)
         {
             this.ContainingFile = containing;
+
+            ChangedOverride = true;
+
+            this.InitChangedCheckers();
         }
 
         /// <summary>
@@ -31,6 +42,10 @@ namespace VPSharp.Entries
             {
                 ContainingFile = parent.ContainingFile;
             }
+
+            ChangedOverride = true;
+
+            this.InitChangedCheckers();
         }
 
         /// <summary>
@@ -38,12 +53,29 @@ namespace VPSharp.Entries
         /// </summary>
         internal VPFile ContainingFile { get; set; }
 
+
+        internal bool ChangedOverride
+        {
+            get;
+            set;
+        }
+
         /// <summary>
         ///     Specifies if this entry has changed.
         /// </summary>
         public virtual bool Changed
         {
-            get { return _changed; }
+            get 
+            { 
+                if (_dirEntry == null && ChangedOverride)
+                {
+                    return true;
+                }
+                else
+                {
+                    return _changed;
+                }
+            }
 
             internal set
             {
@@ -102,9 +134,12 @@ namespace VPSharp.Entries
 
             internal set
             {
-                _parent = value;
+                if (_parent != value)
+                {
+                    _parent = value;
 
-                OnPropertyChanged();
+                    OnPropertyChanged();
+                }
             }
         }
 
@@ -134,11 +169,11 @@ namespace VPSharp.Entries
         {
             get
             {
-                StringBuilder builder = new StringBuilder();
-                builder.Insert(0, Name == null ? "" : Name);
+                var builder = new StringBuilder();
+                builder.Insert(0, this.Name ?? "");
                 builder.Insert(0, "/");
 
-                VPDirectoryEntry parent = Parent;
+                var parent = Parent;
                 while (parent != null)
                 {
                     if (parent.Path != "/")
@@ -245,6 +280,41 @@ namespace VPSharp.Entries
             {
                 PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        protected void AddChangedChecker(string property, Predicate<object> checker)
+        {
+            _changedCheckers[property] = checker;
+        }
+
+        private void InitChangedCheckers()
+        {
+            PropertyChanged += (sender, args) =>
+                {
+                    if (!ChangedOverride && !ContainingFile.BuildingIndex && args.PropertyName != "Changed")
+                    {
+                        var origVal = !_originalValues.ContainsKey(args.PropertyName) ? null : _originalValues[args.PropertyName];
+                        var nowVal = this.GetType().GetProperty(args.PropertyName).GetValue(this);
+
+                        if (_changedCheckers.ContainsKey(args.PropertyName))
+                        {
+                            _changedStatus[args.PropertyName] = _changedCheckers[args.PropertyName](origVal);
+                        }
+                        else
+                        {
+                            _changedStatus[args.PropertyName] = !Equals(nowVal, origVal);
+                        }
+
+                        Changed = _changedStatus.Any(item => item.Value);
+                    }
+                };
+            PropertyChanged += (sender, args) =>
+                {
+                    if (!ChangedOverride && (ContainingFile.BuildingIndex || !_originalValues.ContainsKey(args.PropertyName)) && args.PropertyName != "Changed")
+                    {
+                        _originalValues[args.PropertyName] = this.GetType().GetProperty(args.PropertyName).GetValue(this);
+                    }
+                };
         }
     }
 }

@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using VPSharp.Entries;
@@ -23,7 +24,7 @@ namespace VPSharp
         {
             try
             {
-                using (MemoryMappedFile stream = MemoryMappedFile.CreateFromFile(path))
+                using (var stream = MemoryMappedFile.CreateFromFile(path))
                 {
                     try
                     {
@@ -46,9 +47,9 @@ namespace VPSharp
 
         internal static async Task<Header> CheckVPStream(MemoryMappedFile file)
         {
-            using (MemoryMappedViewStream accessor = file.CreateViewStream(0, Marshal.SizeOf(typeof (Header)), MemoryMappedFileAccess.Read))
+            using (var accessor = file.CreateViewStream(0, Marshal.SizeOf(typeof (Header)), MemoryMappedFileAccess.Read))
             {
-                Header header = await accessor.ReadStructAsync<Header>();
+                var header = await accessor.ReadStructAsync<Header>();
 
                 CheckHeader(header);
 
@@ -93,12 +94,12 @@ namespace VPSharp
 
         internal static readonly int MAX_VERSION = 2;
         private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-        private List<Direntry> DirEntries;
+        private List<Direntry> _dirEntries;
 
-        private bool Disposed;
+        private bool _disposed;
 
-        private Header FileHeader;
-        private MemoryMappedFile MemoryFile;
+        private Header _fileHeader;
+        private MemoryMappedFile _memoryFile;
 
         /// <summary>
         ///     Constructs a new empty VP-file.
@@ -125,7 +126,7 @@ namespace VPSharp
         {
             VPFileInfo = new FileInfo(stream.Name);
 
-            MemoryFile = MemoryMappedFile.CreateFromFile(stream, VPFileInfo.Name, 0,
+            this._memoryFile = MemoryMappedFile.CreateFromFile(stream, VPFileInfo.Name, 0,
                                                          MemoryMappedFileAccess.Read, new MemoryMappedFileSecurity(),
                                                          HandleInheritability.None, false);
 
@@ -139,6 +140,8 @@ namespace VPSharp
 
         public bool SortEntries { get; set; }
 
+        internal bool BuildingIndex { get; set; }
+
         public FileInfo VPFileInfo { get; internal set; }
 
         public VPFileMessages FileMessages { get; internal set; }
@@ -150,7 +153,7 @@ namespace VPSharp
         /// </summary>
         public void Dispose()
         {
-            if (Disposed)
+            if (this._disposed)
             {
                 return;
             }
@@ -158,7 +161,7 @@ namespace VPSharp
             {
                 Close();
 
-                Disposed = true;
+                this._disposed = true;
             }
         }
 
@@ -169,7 +172,7 @@ namespace VPSharp
         /// </summary>
         ~VPFile()
         {
-            if (!Disposed)
+            if (!this._disposed)
             {
                 this.Dispose();
             }
@@ -180,10 +183,10 @@ namespace VPSharp
         /// </summary>
         public void Close()
         {
-            if (MemoryFile != null)
+            if (this._memoryFile != null)
             {
-                MemoryFile.Dispose();
-                MemoryFile = null;
+                this._memoryFile.Dispose();
+                this._memoryFile = null;
             }
         }
 
@@ -193,56 +196,62 @@ namespace VPSharp
         /// <returns></returns>
         public async Task ReadIndexAsync()
         {
-            FileMessages = new VPFileMessages();
+            BuildingIndex = true;
 
-            if (MemoryFile == null)
+            try
             {
-                throw new InvalidOperationException("File not in reading state!");
+                FileMessages = new VPFileMessages();
+
+                if (this._memoryFile == null)
+                {
+                    throw new InvalidOperationException("File not in reading state!");
+                }
+                else
+                {
+                    await ReadHeader();
+
+                    await ReadDirEntries();
+
+                    InitializeRootNode();
+                }
             }
-            else
+            finally
             {
-                await ReadHeader();
-
-                await ReadDirEntries();
-
-                InitializeRootNode();
+                BuildingIndex = false;
             }
         }
 
         private async Task ReadHeader()
         {
-            FileHeader = await VPUtilities.CheckVPStream(MemoryFile);
+            this._fileHeader = await VPUtilities.CheckVPStream(this._memoryFile);
         }
 
         private async Task ReadDirEntries()
         {
             int entrySize = Marshal.SizeOf(typeof (Direntry));
 
-            int offset = FileHeader.diroffset;
-            int size = FileHeader.direntries*entrySize;
-
-            int end = offset + size;
+            int offset = this._fileHeader.diroffset;
+            int size = this._fileHeader.direntries * entrySize;
 
             int diff = (int) VPFileInfo.Length - offset;
 
             // There are files that have a corrupted number of dir entries, this should take care of that.
-            using (MemoryMappedViewStream accessor = MemoryFile.CreateViewStream
-                (offset, Math.Min(size, diff), MemoryMappedFileAccess.Read))
+            using (var accessor = this._memoryFile.CreateViewStream(offset, Math.Min(size, diff), MemoryMappedFileAccess.Read))
             {
-                DirEntries = new List<Direntry>(diff/entrySize);
+                this._dirEntries = new List<Direntry>(diff/entrySize);
 
                 try
                 {
                     while ((accessor.Length - accessor.Position) >= entrySize)
                     {
-                        DirEntries.Add(await accessor.ReadStructAsync<Direntry>());
+                        this._dirEntries.Add(await accessor.ReadStructAsync<Direntry>());
                     }
 
-                    if (DirEntries.Count != FileHeader.direntries)
+                    if (this._dirEntries.Count != this._fileHeader.direntries)
                     {
                         FileMessages.AddMessage(new VPFileMessage(MessageType.WARNING,
-                                                                  String.Format("Illegal count of entries specified in file header! Header says {0} but got {1}.", FileHeader.direntries,
-                                                                                DirEntries.Count)));
+                                                                  String.Format("Illegal count of entries specified in file header! Header says {0} but got {1}.", this._fileHeader.direntries,
+                                                                                this._dirEntries.Count)));
                     }
                 }
                 catch (IOException e)
@@ -255,12 +264,11 @@ namespace VPSharp
 
         private void InitializeRootNode()
         {
-            RootNode = new VPDirectoryEntry(this);
-            RootNode.ChangedOverride = true;
+            RootNode = new VPDirectoryEntry(this) {ChangedOverride = false};
 
-            VPDirectoryEntry currentParent = RootNode;
+            var currentParent = RootNode;
 
-            foreach (Direntry entry in DirEntries)
+            foreach (var entry in this._dirEntries)
             {
                 // Accodring to the documentation offset should be zero, but it isn't...
                 if (entry.size == 0 && entry.timestamp == 0)
@@ -281,8 +289,7 @@ namespace VPSharp
                     }
                     else
                     {
-                        VPDirectoryEntry directory = new VPDirectoryEntry(currentParent);
-                        directory.DirEntry = entry;
+                        var directory = new VPDirectoryEntry(currentParent) {DirEntry = entry, ChangedOverride = false};
 
                         currentParent.AddChild(directory);
 
@@ -292,8 +299,7 @@ namespace VPSharp
                 else
                 {
                     // This is a file
-                    VPFileEntry fileEntry = new VPFileEntry(currentParent);
-                    fileEntry.DirEntry = entry;
+                    var fileEntry = new VPFileEntry(currentParent) {DirEntry = entry, ChangedOverride = false};
 
                     currentParent.AddChild(fileEntry);
                 }
@@ -302,7 +308,7 @@ namespace VPSharp
 
         internal Stream GetFileStream(long offset, long size)
         {
-            return MemoryFile.CreateViewStream(offset, size, MemoryMappedFileAccess.Read);
+            return this._memoryFile.CreateViewStream(offset, size, MemoryMappedFileAccess.Read);
         }
 
         /// <summary>
@@ -326,35 +332,26 @@ namespace VPSharp
                 outPath = outPath + ".out";
             }
 
-            bool success = false;
-
-            using (FileStream stream = new FileStream(outPath, FileMode.Create))
+            using (var stream = new FileStream(outPath, FileMode.Create))
             {
                 await stream.WriteStructAsync(ComputeHeaderValues());
 
                 var offsetDictionary = new Dictionary<VPFileEntry, int>();
 
-                foreach (VPEntry entry in RootNode.ChildrenRecursive())
+                foreach (var file in this.RootNode.ChildrenRecursive().OfType<VPFileEntry>())
                 {
-                    if (entry is VPFileEntry)
+                    offsetDictionary[file] = (int) stream.Position;
+
+                    using (var st = file.OpenFileStream())
                     {
-                        VPFileEntry file = entry as VPFileEntry;
-
-                        offsetDictionary[file] = (int) stream.Position;
-
-                        using (Stream st = file.OpenFileStream())
-                        {
-                            await file.OpenFileStream().CopyToAsync(stream);
-                        }
+                        await st.CopyToAsync(stream);
                     }
                 }
 
                 await WriteDirEntriesRecursive(stream, RootNode, offsetDictionary);
-
-                success = true;
             }
 
-            if (success && originalPath != outPath)
+            if (originalPath != outPath)
             {
                 if (callback == null || callback(new FileInfo(originalPath)))
                 {
@@ -373,16 +370,16 @@ namespace VPSharp
             return originalPath;
         }
 
-        private async Task WriteDirEntriesRecursive(Stream stream, VPDirectoryEntry parentEntry,
-                                                    Dictionary<VPFileEntry, int> offsetDictionary)
+        private static async Task WriteDirEntriesRecursive(Stream stream, VPDirectoryEntry parentEntry,
+                                                    IReadOnlyDictionary<VPFileEntry, int> offsetDictionary)
         {
             Direntry direntry;
 
-            foreach (VPEntry entry in parentEntry.Children)
+            foreach (var entry in parentEntry.Children)
             {
                 if (entry is VPFileEntry)
                 {
-                    VPFileEntry file = entry as VPFileEntry;
+                    var file = entry as VPFileEntry;
 
                     direntry.offset = offsetDictionary[file];
                     direntry.size = file.FileSize;
@@ -437,18 +434,19 @@ namespace VPSharp
 
         private void TraverseEntriesRecursive(VPDirectoryEntry parentDir, ref int direntries, ref int diroffset)
         {
-            foreach (VPEntry entry in parentDir.Children)
+            foreach (var entry in parentDir.Children)
             {
-                if (entry is VPFileEntry)
+                var fileEntry = entry as VPFileEntry;
+                if (fileEntry != null)
                 {
-                    VPFileEntry file = (VPFileEntry) entry;
+                    var file = fileEntry;
 
                     diroffset += file.FileSize;
                     direntries++;
                 }
                 else
                 {
-                    VPDirectoryEntry dirEntry = (VPDirectoryEntry) entry;
+                    var dirEntry = (VPDirectoryEntry) entry;
 
                     TraverseEntriesRecursive(dirEntry, ref direntries, ref diroffset);
 

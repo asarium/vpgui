@@ -25,8 +25,6 @@ namespace VPSharp.Entries
             Children = new ObservableCollection<VPEntry>();
             SubDirectories = new ObservableCollection<VPDirectoryEntry>();
 
-            ChangedOverride = false;
-
             AggregatedFileSize = 0;
             this.LastModified = DateTime.MinValue;
         }
@@ -41,8 +39,6 @@ namespace VPSharp.Entries
         {
             Children = new ObservableCollection<VPEntry>();
             SubDirectories = new ObservableCollection<VPDirectoryEntry>();
-
-            ChangedOverride = false;
 
             AggregatedFileSize = 0;
             this.LastModified = DateTime.MinValue;
@@ -86,25 +82,6 @@ namespace VPSharp.Entries
                     OnPropertyChanged();
                 }
             }
-        }
-
-        internal bool ChangedOverride { private get; set; }
-
-        public override bool Changed
-        {
-            get
-            {
-                if (_dirEntry == null && !ChangedOverride)
-                {
-                    return true;
-                }
-                else
-                {
-                    return base.Changed;
-                }
-            }
-
-            internal set { base.Changed = value; }
         }
 
         private int _totalDirectoryCount = 0;
@@ -158,6 +135,8 @@ namespace VPSharp.Entries
                 entry.Parent.RemoveChild(entry);
             }
 
+            entry.Parent = this;
+
             if (ContainingFile.SortEntries)
             {
                 Children.Insert(Children.GetFittingIndex(entry), entry);
@@ -184,14 +163,7 @@ namespace VPSharp.Entries
             }
             TotalChildrenCount++;
 
-            RecalculateProperties(entry);
-
-            entry.Parent = this;
-
-            if (entry.Changed)
-            {
-                Changed = true;
-            }
+            this.UpdateProperties(entry);
 
             entry.PropertyChanged += EntryOnPropertyChanged;
 
@@ -201,19 +173,39 @@ namespace VPSharp.Entries
         private void EntryOnPropertyChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
             string str = propertyChangedEventArgs.PropertyName;
-            if (str == "LastModified" || str == "FileSize" || str == "AggregatedFileSize" || str == "LastModified")
+            switch (str)
             {
-                RecalculateProperties(sender as VPEntry);
-            }
-            else if (str == "TotalDirectoryCount")
-            {
-                
+                case "AggregatedFileSize":
+                case "FileSize":
+                case "LastModified":
+                    this.RecalculateProperties();
+                    break;
+                case "TotalDirectoryCount":
+                    this.TotalDirectoryCount = this.SubDirectories.Count + this.SubDirectories.Sum(dir => dir.TotalDirectoryCount);
+                    break;
+                case "TotalChildrenCount":
+                    this.TotalChildrenCount = this.Children.Count + this.SubDirectories.Sum(dir => dir.TotalChildrenCount);
+                    break;
             }
         }
 
-        private void SelectNewValues(VPEntry entry, ref DateTime newLastModified, ref int newFileSize)
+        private void RecalculateProperties()
         {
-            VPFileEntry file = entry as VPFileEntry;
+            int newSize = 0;
+            var newTime = DateTime.MinValue;
+
+            foreach (var item in Children)
+            {
+                SelectNewValues(item, ref newTime, ref newSize);
+            }
+
+            AggregatedFileSize = newSize;
+            LastModified = newTime;
+        }
+
+        private static void SelectNewValues(VPEntry entry, ref DateTime newLastModified, ref int newFileSize)
+        {
+            var file = entry as VPFileEntry;
             if (file != null)
             {
                 newFileSize = newFileSize + file.FileSize;
@@ -225,7 +217,7 @@ namespace VPSharp.Entries
             }
             else
             {
-                VPDirectoryEntry dir = entry as VPDirectoryEntry;
+                var dir = entry as VPDirectoryEntry;
 
                 if (dir != null)
                 {
@@ -239,12 +231,13 @@ namespace VPSharp.Entries
             }
         }
 
-        private void RecalculateProperties(VPEntry changedEntry = null)
+
+        private void UpdateProperties(VPEntry changedEntry, bool removed = false)
         {
-            if (changedEntry != null)
+            if (!removed)
             {
                 int newSize = AggregatedFileSize;
-                DateTime newDate = LastModified;
+                var newDate = LastModified;
 
                 SelectNewValues(changedEntry, ref newDate, ref newSize);
 
@@ -253,16 +246,28 @@ namespace VPSharp.Entries
             }
             else
             {
-                int newSize = 0;
-                DateTime newDate = DateTime.MinValue;
+                int size;
 
-                foreach (VPEntry entry in Children)
+                var file = changedEntry as VPFileEntry;
+                if (file != null)
                 {
-                    SelectNewValues(entry, ref newDate, ref newSize);
+                    size = file.FileSize;
+                }
+                else
+                {
+                    var dir = changedEntry as VPDirectoryEntry;
+
+                    size = dir.AggregatedFileSize;
                 }
 
-                AggregatedFileSize = newSize;
-                LastModified = newDate;
+                AggregatedFileSize = AggregatedFileSize - size;
+
+                LastModified = Children.Max(item =>
+                    {
+                        var fileEntry = item as VPFileEntry;
+
+                        return fileEntry != null ? fileEntry.LastModified : (item as VPDirectoryEntry).LastModified;
+                    });
             }
         }
 
@@ -275,22 +280,21 @@ namespace VPSharp.Entries
         {
             bool removed = Children.Remove(entry);
 
-            if (entry is VPDirectoryEntry)
+            var vpDirectoryEntry = entry as VPDirectoryEntry;
+            if (vpDirectoryEntry != null)
             {
-                SubDirectories.Remove((VPDirectoryEntry) entry);
+                SubDirectories.Remove(vpDirectoryEntry);
+
+                TotalDirectoryCount--;
             }
+            TotalChildrenCount--;
 
             if (removed)
             {
                 entry.Parent = null;
                 entry.PropertyChanged -= EntryOnPropertyChanged;
 
-                RecalculateProperties();
-
-                if (entry.Changed)
-                {
-                    RecalculateChangedStatus();
-                }
+                this.UpdateProperties(entry, true);
             }
 
             return removed;
