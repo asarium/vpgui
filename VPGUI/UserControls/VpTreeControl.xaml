@@ -1,0 +1,49 @@
+﻿<UserControl x:Class="VPGUI.UserControls.VpTreeControl"
+             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
+             xmlns:d="http://schemas.microsoft.com/expression/blend/2008" 
+             mc:Ignorable="d" 
+             d:DesignHeight="300" d:DesignWidth="300">
+    <UserControl.Resources>
+        <ResourceDictionary>
+            <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                <ResourceDictionary 
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
+                <ResourceDictionary 
+                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
+            </ResourceDictionary.MergedDictionaries>
+        </ResourceDictionary>
+    </UserControl.Resources>
+    <Grid>
+        <TreeView ItemsSource="{Binding TreeViewModel.TopLevel}" SelectedItemChanged="VpTreeView_OnSelectedItemChanged"
+                              BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
+            <TreeView.ItemContainerStyle>
+                <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
+                    <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
+                    <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
+                    <Setter Property="FontWeight" Value="Normal" />
+
+                    <Setter Property="AllowDrop" Value="True" />
+
+                    <EventSetter Event="DragEnter" Handler="treeItem_DragEnter" />
+                    <EventSetter Event="DragLeave" Handler="treeItem_DragLeave" />
+                    <EventSetter Event="DragOver" Handler="treeItem_DragOver" />
+                    <EventSetter Event="Drop" Handler="treeItem_Drop" />
+                </Style>
+            </TreeView.ItemContainerStyle>
+
+            <TreeView.ItemTemplate>
+                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
+                    <StackPanel Orientation="Horizontal" Height="22">
+                        <Image Width="16" Height="16" Margin="3" Stretch="Uniform"
+                                           Source="{Binding EntryIcon, Mode=OneWay}" />
+                        <TextBlock Text="{Binding Name}" Margin="4,2,4,2" />
+                    </StackPanel>
+                </HierarchicalDataTemplate>
+            </TreeView.ItemTemplate>
+        </TreeView>
+    </Grid>
+</UserControl>

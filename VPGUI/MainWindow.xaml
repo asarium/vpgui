@@ -4,7 +4,6 @@
     xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
     xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
     xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-    xmlns:validationRules="clr-namespace:VPGUI.ValidationRules"
     mc:Ignorable="d" xmlns:user="clr-namespace:VPGUI.UserControls" xmlns:models="clr-namespace:VPGUI.Models"
     x:Class="VPGUI.MainWindow" TitleCaps="False"
     Title="{Binding Title}" d:DesignWidth="600" d:DesignHeight="400"
@@ -12,20 +11,19 @@
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseDark.xaml" />
+                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
+
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary
+                <ResourceDictionary 
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
-                <ResourceDictionary
+                <ResourceDictionary 
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </Window.Resources>
-
     <Window.InputBindings>
         <KeyBinding Command="{Binding OpenCommand}" Key="O" Modifiers="Control" />
 
@@ -75,8 +73,7 @@
                                 <Rectangle Grid.Column="0" Stretch="UniformToFill" Margin="5"
                                            HorizontalAlignment="Center" VerticalAlignment="Center">
                                     <Rectangle.Fill>
-                                        <VisualBrush
-                                            Visual="{Binding Type, Converter={StaticResource MessageTypeConverter}}" />
+                                        <VisualBrush Visual="{Binding Type, Converter={StaticResource MessageTypeConverter}}" />
                                     </Rectangle.Fill>
                                 </Rectangle>
                                 <TextBlock Grid.Column="1" TextWrapping="Wrap" Text="{Binding Message}"
@@ -135,40 +132,13 @@
                         <ColumnDefinition Width="*" />
                     </Grid.ColumnDefinitions>
 
-                    <TreeView Margin="5, 5, 0, 5" Grid.Column="0" ItemsSource="{Binding TreeViewModel.TopLevel}"
-                              SelectedItemChanged="VpTreeView_OnSelectedItemChanged"
-                              BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1">
-                        <TreeView.ItemContainerStyle>
-                            <Style TargetType="{x:Type TreeViewItem}" BasedOn="{StaticResource {x:Type TreeViewItem}}">
-                                <Setter Property="IsExpanded" Value="{Binding IsExpanded, Mode=TwoWay}" />
-                                <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
-                                <Setter Property="FontWeight" Value="Normal" />
-
-                                <Setter Property="AllowDrop" Value="True" />
-
-                                <EventSetter Event="DragEnter" Handler="treeItem_DragEnter" />
-                                <EventSetter Event="DragLeave" Handler="treeItem_DragLeave" />
-                                <EventSetter Event="DragOver" Handler="treeItem_DragOver" />
-                                <EventSetter Event="Drop" Handler="treeItem_Drop" />
-                            </Style>
-                        </TreeView.ItemContainerStyle>
-
-                        <TreeView.ItemTemplate>
-                            <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                                <StackPanel Orientation="Horizontal" Height="22">
-                                    <Image Width="16" Height="16" Margin="3" Stretch="Uniform"
-                                           Source="{Binding EntryIcon, Mode=OneWay}" />
-                                    <TextBlock Text="{Binding Name}" Margin="4,2,4,2" />
-                                </StackPanel>
-                            </HierarchicalDataTemplate>
-                        </TreeView.ItemTemplate>
-                    </TreeView>
+                    <user:VpTreeControl Margin="5, 5, 0, 5" Grid.Column="0" ApplicationModel="{Binding}" />
 
                     <GridSplitter Width="10" HorizontalAlignment="Center" Grid.Column="1" Opacity="0" />
 
                     <Border Grid.Column="2" BorderBrush="{DynamicResource AccentColorBrush}" BorderThickness="1"
                             Margin="0, 5, 5, 5">
-                        <user:VpDirectoryControl ApplicationModel="{Binding RelativeSource={RelativeSource Mode=FindAncestor, AncestorType={x:Type Window}}, Path=ApplicationModel}" />
+                        <user:VpDirectoryControl ApplicationModel="{Binding}" />
                     </Border>
                 </Grid>
 

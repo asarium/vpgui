@@ -34,7 +34,9 @@ namespace VPGUI
 
             this.MainWindow = new MainWindow();
 
-            MainModel model = new MainModel((IInteractionService) this.MainWindow);
+            ThemeManager.ChangeTheme(this.MainWindow, Settings.Default.ThemeAccent, Settings.Default.Theme);
+
+            var model = new MainModel((IInteractionService) this.MainWindow);
             if (vpPath != null)
             {
                 model.OpenVpFile(vpPath);
@@ -42,14 +44,12 @@ namespace VPGUI
 
             ((MainWindow) this.MainWindow).ApplicationModel = model;
 
-            ThemeManager.ChangeTheme(this.MainWindow, Settings.Default.ThemeAccent, Settings.Default.Theme);
-
             this.MainWindow.Show();
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            Settings settings = sender as Settings;
+            var settings = sender as Settings;
 
             if (settings != null && (e.PropertyName == "Theme" || e.PropertyName == "ThemeAccent"))
             {

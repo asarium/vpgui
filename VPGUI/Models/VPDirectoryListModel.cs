@@ -138,11 +138,11 @@ namespace VPGUI.Models
                 var entry = this.Entry as VPDirectoryEntry;
                 if (entry != null)
                 {
-                    return entry.LastModified.ToLocalTime().ToString(CultureInfo.InvariantCulture);
+                    return entry.LastModified.ToLocalTime().ToString(CultureInfo.CurrentUICulture);
                 }
                 else
                 {
-                    return ((VPFileEntry) this.Entry).LastModified.ToLocalTime().ToString(CultureInfo.InvariantCulture);
+                    return ((VPFileEntry) this.Entry).LastModified.ToLocalTime().ToString(CultureInfo.CurrentUICulture);
                 }
             }
         }

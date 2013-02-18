@@ -89,7 +89,7 @@ namespace VPGUI.Commands
 
         protected bool BackupCallback(FileInfo info)
         {
-            if (Settings.Default.BackupMode == BackupMode.CreateBackups)
+            if (Settings.Default.CreateBackups)
             {
                 string current = Directory.GetCurrentDirectory();
 

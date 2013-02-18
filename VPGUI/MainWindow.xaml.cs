@@ -17,7 +17,7 @@ namespace VPGUI
     /// <summary>
     ///     Interaction logic for MainWindow.xaml
     /// </summary>
-    public partial class MainWindow : MetroWindow, IInteractionService
+    public partial class MainWindow : IInteractionService
     {
         #region Members
 
@@ -80,75 +80,6 @@ namespace VPGUI
                 history.CurrentIndex = history.CurrentIndex + e.ClickCount;
             }
         }
-
-        #region vpTreeView
-
-        private object _currentTreeItem;
-        private DateTime _dragHoverBegin;
-
-        private void treeItem_DragEnter(object sender, DragEventArgs e)
-        {
-            if (this._currentTreeItem != sender)
-            {
-                this._currentTreeItem = sender;
-                this._dragHoverBegin = DateTime.UtcNow;
-            }
-
-            e.Handled = true;
-            e.Effects = DragDropEffects.Copy;
-        }
-
-        private void treeItem_DragLeave(object sender, DragEventArgs e)
-        {
-            this._currentTreeItem = null;
-
-            e.Handled = true;
-        }
-
-        private void treeItem_DragOver(object sender, DragEventArgs e)
-        {
-            VPTreeEntryViewModel entry = (((FrameworkElement) sender).DataContext) as VPTreeEntryViewModel;
-
-            if (entry != null)
-            {
-                if (this._currentTreeItem == sender && (DateTime.UtcNow - this._dragHoverBegin).TotalMilliseconds > 1000)
-                {
-                    entry.IsExpanded = true;
-                }
-
-                entry.IsSelected = true;
-
-                e.Handled = true;
-                e.Effects = DragDropEffects.Copy;
-            }
-        }
-
-        private void treeItem_Drop(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                foreach (string dropPath in (string[]) e.Data.GetData(DataFormats.FileDrop))
-                {
-                    this.ApplicationModel.AddFilePath(dropPath).ContinueWith(task =>
-                        {
-                            if (task.Exception != null)
-                            {
-                                this.ApplicationModel.StatusMessage = "Couldn't add entry: " +
-                                                                      Util.GetAggregateExceptionMessage(task.Exception);
-                            }
-                        });
-                }
-            }
-        }
-
-        private void VpTreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
-        {
-            var val = e.NewValue as VPTreeEntryViewModel;
-
-            this.ApplicationModel.SelectedHistory.AddHistoryEntry(val);
-        }
-
-        #endregion
 
         #endregion
 
