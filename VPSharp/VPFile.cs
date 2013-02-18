@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.IO.MemoryMappedFiles;
 using System.Runtime.InteropServices;
-using System.Threading;
 using System.Threading.Tasks;
 using VPSharp.Entries;
 using VPSharp.Utilities;
@@ -11,12 +10,12 @@ using VPSharp.Utilities;
 namespace VPSharp
 {
     /// <summary>
-    /// Provides utility functions for VP-file handling
+    ///     Provides utility functions for VP-file handling
     /// </summary>
     public static class VPUtilities
     {
         /// <summary>
-        /// Checks if the given path points to a valid VP-File
+        ///     Checks if the given path points to a valid VP-File
         /// </summary>
         /// <param name="path">The filepath</param>
         /// <returns>true when the filepath points to a valid VP-file, false otherwise</returns>
@@ -47,7 +46,7 @@ namespace VPSharp
 
         internal static async Task<Header> CheckVPStream(MemoryMappedFile file)
         {
-            using (MemoryMappedViewStream accessor = file.CreateViewStream(0, Marshal.SizeOf(typeof(Header)), MemoryMappedFileAccess.Read))
+            using (MemoryMappedViewStream accessor = file.CreateViewStream(0, Marshal.SizeOf(typeof (Header)), MemoryMappedFileAccess.Read))
             {
                 Header header = await accessor.ReadStructAsync<Header>();
 
@@ -58,18 +57,18 @@ namespace VPSharp
         }
 
         /// <summary>
-        /// Validates the given header.
+        ///     Validates the given header.
         /// </summary>
         /// <param name="header">The header which should be validated.</param>
         /// <exception cref="ArgumentException">Thrown when the given header is not valid.</exception>
         internal static void CheckHeader(Header header)
         {
             // Check the header
-            char[] h = header.header;
+            var h = header.header;
             if (!(h[0] == 'V' &&
-                h[1] == 'P' &&
-                h[2] == 'V' &&
-                h[3] == 'P'))
+                  h[1] == 'P' &&
+                  h[2] == 'V' &&
+                  h[3] == 'P'))
             {
                 throw new ArgumentException("No VP file, first four bytes did not match.");
             }
@@ -82,52 +81,27 @@ namespace VPSharp
     }
 
     /// <summary>
-    /// Main class for handling VP-files. Provides ways to read and write VP-files.
+    ///     Main class for handling VP-files. Provides ways to read and write VP-files.
     /// </summary>
     public sealed class VPFile : IDisposable
     {
+        #region Delegates
+
+        public delegate bool OverwriteCallback(FileInfo toBeOverwritten);
+
+        #endregion
+
         internal static readonly int MAX_VERSION = 2;
+        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
+        private List<Direntry> DirEntries;
 
-        private MemoryMappedFile MemoryFile;
-
-        private bool Disposed = false;
+        private bool Disposed;
 
         private Header FileHeader;
-
-        private List<Direntry> DirEntries = null;
-
-        /// <summary>
-        /// The root node of the vp-file which contains the tree of all entries in this file.
-        /// </summary>
-        public VPDirectoryEntry RootNode
-        {
-            get;
-
-            internal set;
-        }
-
-        public bool SortEntries
-        {
-            get;
-
-            set;
-        }
-
-        public FileInfo VPFileInfo
-        {
-            get;
-            internal set;
-        }
-
-        public VPFileMessages FileMessages
-        {
-            get;
-
-            internal set;
-        }
+        private MemoryMappedFile MemoryFile;
 
         /// <summary>
-        /// Constructs a new empty VP-file.
+        ///     Constructs a new empty VP-file.
         /// </summary>
         public VPFile()
         {
@@ -135,7 +109,7 @@ namespace VPSharp
         }
 
         /// <summary>
-        /// Constructs a VP-file which uses the given file
+        ///     Constructs a VP-file which uses the given file
         /// </summary>
         /// <param name="path">The path of the VP-file</param>
         public VPFile(string path)
@@ -144,7 +118,7 @@ namespace VPSharp
         }
 
         /// <summary>
-        /// Constructs a VP-file from the given FileStream.
+        ///     Constructs a VP-file from the given FileStream.
         /// </summary>
         /// <param name="stream">A stream of the VP-File</param>
         public VPFile(FileStream stream)
@@ -152,25 +126,27 @@ namespace VPSharp
             VPFileInfo = new FileInfo(stream.Name);
 
             MemoryFile = MemoryMappedFile.CreateFromFile(stream, VPFileInfo.Name, 0,
-                MemoryMappedFileAccess.Read, new MemoryMappedFileSecurity(),
-                HandleInheritability.None, false);
+                                                         MemoryMappedFileAccess.Read, new MemoryMappedFileSecurity(),
+                                                         HandleInheritability.None, false);
 
             SortEntries = true;
         }
 
         /// <summary>
-        /// Disposes any resources which are used by the file.
+        ///     The root node of the vp-file which contains the tree of all entries in this file.
         /// </summary>
-        ~VPFile()
-        {
-            if (!Disposed)
-            {
-                this.Dispose();
-            }
-        }
+        public VPDirectoryEntry RootNode { get; internal set; }
+
+        public bool SortEntries { get; set; }
+
+        public FileInfo VPFileInfo { get; internal set; }
+
+        public VPFileMessages FileMessages { get; internal set; }
+
+        #region IDisposable Members
 
         /// <summary>
-        /// Disposes any resources which are used by the file.
+        ///     Disposes any resources which are used by the file.
         /// </summary>
         public void Dispose()
         {
@@ -186,8 +162,21 @@ namespace VPSharp
             }
         }
 
+        #endregion
+
         /// <summary>
-        /// Closes all connections to underlying resources.
+        ///     Disposes any resources which are used by the file.
+        /// </summary>
+        ~VPFile()
+        {
+            if (!Disposed)
+            {
+                this.Dispose();
+            }
+        }
+
+        /// <summary>
+        ///     Closes all connections to underlying resources.
         /// </summary>
         public void Close()
         {
@@ -199,7 +188,7 @@ namespace VPSharp
         }
 
         /// <summary>
-        /// Asynchonously reads index of the VP file.
+        ///     Asynchonously reads index of the VP file.
         /// </summary>
         /// <returns></returns>
         public async Task ReadIndexAsync()
@@ -227,10 +216,10 @@ namespace VPSharp
 
         private async Task ReadDirEntries()
         {
-            int entrySize = Marshal.SizeOf(typeof(Direntry));
+            int entrySize = Marshal.SizeOf(typeof (Direntry));
 
             int offset = FileHeader.diroffset;
-            int size = FileHeader.direntries * entrySize;
+            int size = FileHeader.direntries*entrySize;
 
             int end = offset + size;
 
@@ -240,7 +229,7 @@ namespace VPSharp
             using (MemoryMappedViewStream accessor = MemoryFile.CreateViewStream
                 (offset, Math.Min(size, diff), MemoryMappedFileAccess.Read))
             {
-                DirEntries = new List<Direntry>(diff / entrySize);
+                DirEntries = new List<Direntry>(diff/entrySize);
 
                 try
                 {
@@ -252,13 +241,14 @@ namespace VPSharp
                     if (DirEntries.Count != FileHeader.direntries)
                     {
                         FileMessages.AddMessage(new VPFileMessage(MessageType.WARNING,
-                            String.Format("Illegal count of entries specified in file header! Header says {0} but got {1}.", FileHeader.direntries, DirEntries.Count)));
+                                                                  String.Format("Illegal count of entries specified in file header! Header says {0} but got {1}.", FileHeader.direntries,
+                                                                                DirEntries.Count)));
                     }
                 }
                 catch (IOException e)
                 {
                     throw new ArgumentException("Error while reading direntries. The file is " +
-                        "probably corrupt.", e);
+                                                "probably corrupt.", e);
                 }
             }
         }
@@ -315,13 +305,13 @@ namespace VPSharp
             return MemoryFile.CreateViewStream(offset, size, MemoryMappedFileAccess.Read);
         }
 
-        public delegate bool OverwriteCallback(FileInfo toBeOverwritten);
-
         /// <summary>
-        /// Asynchronoulsy writes the current contents of the file to the specifed path
+        ///     Asynchronoulsy writes the current contents of the file to the specifed path
         /// </summary>
-        /// <param name="outPath">The path where the file is written to. null if the current file should
-        /// be overwritte.</param>
+        /// <param name="outPath">
+        ///     The path where the file is written to. null if the current file should
+        ///     be overwritte.
+        /// </param>
         /// <returns></returns>
         public async Task<string> WriteVPAsync(string outPath = null, OverwriteCallback callback = null)
         {
@@ -340,9 +330,9 @@ namespace VPSharp
 
             using (FileStream stream = new FileStream(outPath, FileMode.Create))
             {
-                await stream.WriteStructAsync<Header>(ComputeHeaderValues());
+                await stream.WriteStructAsync(ComputeHeaderValues());
 
-                Dictionary<VPFileEntry, int> offsetDictionary = new Dictionary<VPFileEntry, int>();
+                var offsetDictionary = new Dictionary<VPFileEntry, int>();
 
                 foreach (VPEntry entry in RootNode.ChildrenRecursive())
                 {
@@ -383,10 +373,8 @@ namespace VPSharp
             return originalPath;
         }
 
-        private static readonly DateTime UnixEpoch = new DateTime(1970, 1, 1, 0, 0, 0, DateTimeKind.Utc);
-
         private async Task WriteDirEntriesRecursive(Stream stream, VPDirectoryEntry parentEntry,
-            Dictionary<VPFileEntry, int> offsetDictionary)
+                                                    Dictionary<VPFileEntry, int> offsetDictionary)
         {
             Direntry direntry;
 
@@ -402,7 +390,7 @@ namespace VPSharp
 
                     direntry.timestamp = (int) (file.LastModified - UnixEpoch).TotalSeconds;
 
-                    await stream.WriteStructAsync<Direntry>(direntry);
+                    await stream.WriteStructAsync(direntry);
                 }
                 else
                 {
@@ -412,7 +400,7 @@ namespace VPSharp
                     direntry.timestamp = 0;
                     direntry.name = entry.Name;
 
-                    await stream.WriteStructAsync<Direntry>(direntry);
+                    await stream.WriteStructAsync(direntry);
 
                     await WriteDirEntriesRecursive(stream, entry as VPDirectoryEntry, offsetDictionary);
 
@@ -422,7 +410,7 @@ namespace VPSharp
                     direntry.timestamp = 0;
                     direntry.name = "..";
 
-                    await stream.WriteStructAsync<Direntry>(direntry);
+                    await stream.WriteStructAsync(direntry);
                 }
             }
         }
@@ -431,7 +419,7 @@ namespace VPSharp
         {
             Header header;
 
-            header.header = new char[] { 'V', 'P', 'V', 'P' };
+            header.header = new[] {'V', 'P', 'V', 'P'};
             header.version = MAX_VERSION;
 
             ComputeDirHeaderValues(out header.direntries, out header.diroffset);
@@ -441,7 +429,7 @@ namespace VPSharp
 
         private void ComputeDirHeaderValues(out int direntries, out int diroffset)
         {
-            diroffset = Marshal.SizeOf(typeof(Header)); // add size of header first
+            diroffset = Marshal.SizeOf(typeof (Header)); // add size of header first
             direntries = 0;
 
             TraverseEntriesRecursive(RootNode, ref direntries, ref diroffset);

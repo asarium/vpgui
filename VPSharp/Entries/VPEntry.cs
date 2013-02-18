@@ -6,22 +6,14 @@ using System.Text;
 namespace VPSharp.Entries
 {
     /// <summary>
-    /// An abstract entry in a VP-file. Can either be a VPFileEntry or a VPDirectoryEntry
+    ///     An abstract entry in a VP-file. Can either be a VPFileEntry or a VPDirectoryEntry
     /// </summary>
     public abstract class VPEntry : INotifyPropertyChanged, IComparable<VPEntry>
     {
-        /// <summary>
-        /// Fired when a property of this entry has changed
-        /// </summary>
-        public event PropertyChangedEventHandler PropertyChanged;
-
-        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
-        {
-            if (PropertyChanged != null)
-            {
-                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
-            }
-        }
+        private bool _changed;
+        internal Direntry? _dirEntry = null;
+        private string _name;
+        private VPDirectoryEntry _parent;
 
         internal VPEntry(VPFile containing)
         {
@@ -29,7 +21,7 @@ namespace VPSharp.Entries
         }
 
         /// <summary>
-        /// Initializes the entry in the given VPFile and with the given parent
+        ///     Initializes the entry in the given VPFile and with the given parent
         /// </summary>
         /// <param name="file">The VPFile object which contains this entry</param>
         /// <param name="parent">The parent of this entry, can be null for the root entry</param>
@@ -42,26 +34,16 @@ namespace VPSharp.Entries
         }
 
         /// <summary>
-        /// The VPFile which contains this entry.
+        ///     The VPFile which contains this entry.
         /// </summary>
-        internal VPFile ContainingFile
-        {
-            get;
-
-            set;
-        }
-
-        private bool _changed = false;
+        internal VPFile ContainingFile { get; set; }
 
         /// <summary>
-        /// Specifies if this entry has changed.
+        ///     Specifies if this entry has changed.
         /// </summary>
         public virtual bool Changed
         {
-            get
-            {
-                return _changed;
-            }
+            get { return _changed; }
 
             internal set
             {
@@ -86,7 +68,6 @@ namespace VPSharp.Entries
             }
         }
 
-        internal Direntry? _dirEntry = null;
         internal Direntry DirEntry
         {
             get
@@ -112,17 +93,12 @@ namespace VPSharp.Entries
             }
         }
 
-        private VPDirectoryEntry _parent;
-
         /// <summary>
-        /// The parent of this entry
+        ///     The parent of this entry
         /// </summary>
         public virtual VPDirectoryEntry Parent
         {
-            get
-            {
-                return _parent;
-            }
+            get { return _parent; }
 
             internal set
             {
@@ -133,16 +109,12 @@ namespace VPSharp.Entries
         }
 
 
-        private string _name;
         /// <summary>
-        /// The name of this entry
+        ///     The name of this entry
         /// </summary>
         public virtual string Name
         {
-            get
-            {
-                return _name;
-            }
+            get { return _name; }
 
             set
             {
@@ -156,7 +128,7 @@ namespace VPSharp.Entries
         }
 
         /// <summary>
-        /// Constructs the path of the file within this file. The directory separator is '/'.
+        ///     Constructs the path of the file within this file. The directory separator is '/'.
         /// </summary>
         public string Path
         {
@@ -180,6 +152,8 @@ namespace VPSharp.Entries
                 return builder.ToString();
             }
         }
+
+        #region IComparable<VPEntry> Members
 
         public int CompareTo(VPEntry other)
         {
@@ -251,6 +225,25 @@ namespace VPSharp.Entries
                         return this.Name.CompareTo(other.Name);
                     }
                 }
+            }
+        }
+
+        #endregion
+
+        #region INotifyPropertyChanged Members
+
+        /// <summary>
+        ///     Fired when a property of this entry has changed
+        /// </summary>
+        public event PropertyChangedEventHandler PropertyChanged;
+
+        #endregion
+
+        protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
+        {
+            if (PropertyChanged != null)
+            {
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
     }

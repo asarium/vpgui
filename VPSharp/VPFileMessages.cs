@@ -1,9 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace VPSharp
 {
@@ -18,10 +15,7 @@ namespace VPSharp
 
         public ReadOnlyCollection<VPFileMessage> Messages
         {
-            get
-            {
-                return new ReadOnlyCollection<VPFileMessage>(_messages);
-            }
+            get { return new ReadOnlyCollection<VPFileMessage>(_messages); }
         }
 
         internal void AddMessage(VPFileMessage message)
@@ -38,24 +32,14 @@ namespace VPSharp
 
     public class VPFileMessage
     {
-        public string Message
-        {
-            get;
-
-            internal set;
-        }
-
-        public MessageType Type
-        {
-            get;
-
-            internal set;
-        }
-
         internal VPFileMessage(MessageType type, string message)
         {
             Type = type;
             Message = message;
         }
+
+        public string Message { get; internal set; }
+
+        public MessageType Type { get; internal set; }
     }
 }
