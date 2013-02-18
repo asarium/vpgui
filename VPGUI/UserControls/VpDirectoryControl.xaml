@@ -4,21 +4,18 @@
              xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:models="clr-namespace:VPGUI.Models"
+             xmlns:validationRules="clr-namespace:VPGUI.ValidationRules"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Colours.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary
+                <ResourceDictionary 
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
-                <ResourceDictionary
+                <ResourceDictionary 
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
-                <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/Blue.xaml" />
-                <ResourceDictionary
-                    Source="pack://application:,,,/MahApps.Metro;component/Styles/Accents/BaseLight.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
     </UserControl.Resources>
@@ -28,9 +25,7 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ItemsControl Grid.Row="0"
-                      ItemsSource="{Binding TreeViewModel.SelectedItem, Converter={StaticResource TreeItemToHierarchy}}"
-                      Margin="5">
+        <ItemsControl Grid.Row="0" Margin="5" ItemsSource="{Binding TreeViewModel.SelectedItem, Converter={StaticResource TreeItemToHierarchy}}">
             <ItemsControl.ItemsPanel>
                 <ItemsPanelTemplate>
                     <StackPanel Orientation="Horizontal" />
@@ -39,9 +34,9 @@
             <ItemsControl.ItemTemplate>
                 <DataTemplate DataType="models:VPTreeEntryViewModel">
                     <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" Style="{DynamicResource MetroTextBlock}" FontSize="14" />
+                        <TextBlock Text="{Binding Name}" FontSize="14" Foreground="{DynamicResource BlackBrush}" />
 
-                        <TextBlock Text="/" Margin="4, 0, 4, 0" Style="{DynamicResource MetroTextBlock}" FontSize="14" />
+                        <TextBlock Text="/" Margin="4, 0, 4, 0" FontSize="14" Foreground="{DynamicResource BlackBrush}" />
                     </StackPanel>
                 </DataTemplate>
             </ItemsControl.ItemTemplate>
@@ -50,11 +45,14 @@
         <ListView ItemsSource="{Binding DirectoryListModel.Entries}" Margin="0" Grid.Row="1"
                   AllowDrop="True" DragEnter="vpListView_DragEnter_1"
                   DragOver="vpListView_DragOver_1" Drop="vpListView_Drop_1" Height="Auto"
-                  Style="{StaticResource VirtualisedListView}" SelectionMode="Extended">
+                  Style="{DynamicResource VirtualisedListView}" SelectionMode="Extended">
             <ListView.InputBindings>
             </ListView.InputBindings>
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
+                    <Style.Resources>
+                        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                    </Style.Resources>
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="FontWeight" Value="Normal" />
 
@@ -73,10 +71,8 @@
                                            Source="{Binding EntryIcon}" />
                                     <TextBlock Text="{Binding Name}" Margin="4,2,4,2" />
 
-                                    <!-- Editing support -->
                                     <TextBox Text="{Binding Name, Mode=TwoWay}"
                                              Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisiblity}}"
-                                             Style="{DynamicResource MetroTextBox}"
                                              LostFocus="ListViewEditBox_OnLostFocus" />
                                 </VirtualizingStackPanel>
                             </DataTemplate>
