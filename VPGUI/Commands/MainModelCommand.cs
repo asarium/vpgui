@@ -1,5 +1,7 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Windows.Input;
+using System.Windows.Threading;
 using VPGUI.Models;
 
 namespace VPGUI.Commands
@@ -9,9 +11,16 @@ namespace VPGUI.Commands
         protected MainModelCommand(MainModel applicationModel)
         {
             this.ApplicationModel = applicationModel;
+
+            this.Dispatcher = Dispatcher.CurrentDispatcher;
         }
 
-        protected MainModel ApplicationModel { get; set; }
+        private Dispatcher Dispatcher
+        {
+            get; set;
+        }
+
+        protected MainModel ApplicationModel { get; private set; }
 
         #region ICommand Members
 
@@ -27,7 +36,14 @@ namespace VPGUI.Commands
         {
             if (this.CanExecuteChanged != null)
             {
-                this.CanExecuteChanged(this, EventArgs.Empty);
+                if (Dispatcher.CheckAccess())
+                {
+                    CanExecuteChanged(this, EventArgs.Empty);
+                }
+                else
+                {
+                    Dispatcher.InvokeAsync(() => CanExecuteChanged(this, EventArgs.Empty));
+                }
             }
         }
     }
