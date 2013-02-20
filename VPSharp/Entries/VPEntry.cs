@@ -310,7 +310,7 @@ namespace VPSharp.Entries
                 };
             PropertyChanged += (sender, args) =>
                 {
-                    if (!ChangedOverride && (ContainingFile.BuildingIndex || !_originalValues.ContainsKey(args.PropertyName)) && args.PropertyName != "Changed")
+                    if (ChangedOverride && (ContainingFile.BuildingIndex || !_originalValues.ContainsKey(args.PropertyName)) && args.PropertyName != "Changed")
                     {
                         _originalValues[args.PropertyName] = this.GetType().GetProperty(args.PropertyName).GetValue(this);
                     }
