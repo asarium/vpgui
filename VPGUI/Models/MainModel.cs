@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Diagnostics;
 using System.IO;
@@ -43,6 +44,9 @@ namespace VPGUI.Models
             this.IsBusy = false;
 
             this.PropertyChanged += this.MainModel_PropertyChanged;
+
+            TreeDNDHandler = new TreeDragDropHandler(this);
+            ListDNDHandler = new ListDragDropHandler(this);
         }
 
         public bool IsBusy
@@ -88,6 +92,10 @@ namespace VPGUI.Models
                 }
             }
         }
+
+        public TreeDragDropHandler TreeDNDHandler { get; private set; }
+
+        public ListDragDropHandler ListDNDHandler { get; private set; }
 
         public bool FileMessagesShown
         {
@@ -232,6 +240,7 @@ namespace VPGUI.Models
 
         // File menu
         private ICommand _openCommand;
+        private ICommand _closeFileCommand;
         private ICommand _saveCommand;
         private ICommand _saveAsCommand;
         private ICommand _closeCommand;
@@ -240,6 +249,7 @@ namespace VPGUI.Models
         private ICommand _extractFilesCommand;
         private ICommand _addEntriesCommand;
         private ICommand _deleteSelectedCommand;
+        private ICommand _renameCommand;
 
         // Select menu
         private ICommand _selectAllCommand;
@@ -392,11 +402,18 @@ namespace VPGUI.Models
             }
         }
 
-        #endregion
+        public ICommand RenameCommand
+        {
+            get
+            {
+                if (this._renameCommand == null)
+                {
+                    this._renameCommand = new RenameCommand(this);
+                }
 
-        #region INotifyPropertyChanged Members
-
-        public event PropertyChangedEventHandler PropertyChanged;
+                return this._renameCommand;
+            }
+        }
 
         #endregion
 
@@ -481,11 +498,13 @@ namespace VPGUI.Models
             }
         }
 
+        public event PropertyChangedEventHandler PropertyChanged;
+
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
         {
-            if (this.PropertyChanged != null)
+            if (PropertyChanged != null)
             {
-                this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
+                PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
         }
 
@@ -661,7 +680,23 @@ namespace VPGUI.Models
                 }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
-        internal async Task AddFilePath(string filePath, VPDirectoryEntry parent = null, bool showMessage = true)
+        public void AddFilePaths(IEnumerable<string> paths, VPDirectoryEntry parent = null)
+        {
+            IsBusy = true;
+            BusyMessage = "Adding files...";
+
+            Task.Run(async () =>
+            {
+                foreach (var path in paths)
+                {
+                    BusyMessage = "Adding " + new FileInfo(path).Name + "...";
+
+                    await AddFilePath(path, parent);
+                }
+            }).ContinueWith(task => IsBusy = false);
+        }
+
+        public async Task AddFilePath(string filePath, VPDirectoryEntry parent = null, bool showMessage = true)
         {
             if (this.CurrentVpFile == null || this.TreeViewModel == null || this.TreeViewModel.SelectedItem == null)
             {
@@ -711,6 +746,23 @@ namespace VPGUI.Models
             {
                 this.StatusMessage = "'" + filePath + "' has been added...";
             }
+        }
+
+        public void CreateDirectory(VPDirectoryEntry parent = null, string name = null)
+        {
+            if (parent == null)
+            {
+                parent = TreeViewModel.SelectedItem.Entry;
+            }
+
+            var newEntry = new VPDirectoryEntry(parent);
+
+            if (name != null)
+            {
+                newEntry.Name = name;
+            }
+
+            parent.AddChild(newEntry);
         }
     }
 }

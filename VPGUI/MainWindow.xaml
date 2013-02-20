@@ -34,6 +34,7 @@
         <KeyBinding Command="{Binding AddEntriesCommand}" Key="A" Modifiers="Control+Shift" />
         <KeyBinding Command="{Binding ExtractFilesCommand}" Key="E" Modifiers="Control" />
         <KeyBinding Command="{Binding DeleteSelectedCommand}" Key="Delete" />
+        <KeyBinding Command="{Binding RenameCommand}" Key="F2" />
 
         <KeyBinding Command="{Binding SelectAllCommand}" Key="A" Modifiers="Control" />
         <KeyBinding Command="{Binding InvertSelectionCommand}" Key="I" Modifiers="Control+Shift" />
@@ -113,9 +114,11 @@
                         <MenuItem Header="Add Entries" Command="{Binding AddEntriesCommand}" InputGestureText="Ctrl+Shift+A" />
                         <MenuItem Header="Extract" Command="{Binding ExtractFilesCommand}" InputGestureText="Ctrl+E" />
                         
+                        <MenuItem Header="Rename" Command="{Binding RenameCommand}" InputGestureText="F2" />
+                        
                         <Separator />
                         
-                        <MenuItem Header="Delete Selection" Command="{Binding DeleteSelectedCommand}" InputGestureText="Del" />
+                        <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" InputGestureText="Del" />
                     </MenuItem>
                     
                     <MenuItem Header="_Select">

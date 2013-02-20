@@ -22,21 +22,8 @@ namespace VPGUI.Commands
 
         public override void Execute(object parameter)
         {
-            ApplicationModel.InteractionService.OpenFileDialog("Add files to VP", true, paths =>
-                {
-                    ApplicationModel.IsBusy = true;
-                    ApplicationModel.BusyMessage = "Adding files...";
-
-                    Task.Run(async () =>
-                        {
-                            foreach (var path in paths)
-                            {
-                                ApplicationModel.BusyMessage = "Adding " + new FileInfo(path).Name + "...";
-
-                                await ApplicationModel.AddFilePath(path);
-                            }
-                        }).ContinueWith(task => ApplicationModel.IsBusy = false);
-                }, new FileFilter("All files", "*.*"));
+            ApplicationModel.InteractionService.OpenFileDialog("Add files to VP", true, 
+                paths => this.ApplicationModel.AddFilePaths(paths), new FileFilter("All files", "*.*"));
         }
     }
 }

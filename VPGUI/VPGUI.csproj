@@ -72,18 +72,21 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="GongSolutions.Wpf.DragDrop, Version=0.1.3.4, Culture=neutral, processorArchitecture=MSIL">
+      <SpecificVersion>False</SpecificVersion>
+      <HintPath>..\packages\gong-wpf-dragdrop.0.1.3.4\lib\net40\GongSolutions.Wpf.DragDrop.dll</HintPath>
+    </Reference>
     <Reference Include="MahApps.Metro, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MahApps.Metro.0.10.1.26-ALPHA\lib\net40\MahApps.Metro.dll</HintPath>
+      <HintPath>..\packages\MahApps.Metro.0.10.1.27-ALPHA\lib\net40\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
-    <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
-      <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\packages\MahApps.Metro.0.10.1.26-ALPHA\lib\net40\System.Windows.Interactivity.dll</HintPath>
+    <Reference Include="System.Windows.Interactivity">
+      <HintPath>..\packages\MahApps.Metro.0.10.1.27-ALPHA\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -107,7 +110,9 @@
     <Compile Include="Commands\ExtractFilesCommand.cs" />
     <Compile Include="Commands\InvertSelectionCommand.cs" />
     <Compile Include="Commands\MainModelCommand.cs" />
+    <Compile Include="Commands\NewDirectoryCommand.cs" />
     <Compile Include="Commands\OpenSelectedCommand.cs" />
+    <Compile Include="Commands\RenameCommand.cs" />
     <Compile Include="Commands\SaveAsCommand.cs" />
     <Compile Include="Commands\SaveCommand.cs" />
     <Compile Include="Commands\SelectAllCommand.cs" />
@@ -115,9 +120,11 @@
     <Compile Include="Converters\MessageTypeConverter.cs" />
     <Compile Include="Converters\TreeItemToHierarchyConverter.cs" />
     <Compile Include="IconHelper\IconHelper.cs" />
+    <Compile Include="Models\ListDragDropHandler.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Models\OptionsModel.cs" />
     <Compile Include="Models\SelectedHistory.cs" />
+    <Compile Include="Models\TreeDragDropHandler.cs" />
     <Compile Include="Models\VPMessagesViewModel.cs" />
     <Compile Include="Models\VPFileMessageView.cs" />
     <Compile Include="Services\IInteractionService.cs" />
@@ -131,6 +138,7 @@
     <Compile Include="UserControls\VpTreeControl.xaml.cs">
       <DependentUpon>VpTreeControl.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Utilities\ObservableViewModelCollection.cs" />
     <Compile Include="Utilities\Settings\ExtractLocation.cs" />
     <Compile Include="Utilities\Util.cs" />
     <Compile Include="ValidationRules\FileNameValidator.cs" />

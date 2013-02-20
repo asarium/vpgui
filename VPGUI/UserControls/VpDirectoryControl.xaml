@@ -5,6 +5,7 @@
              xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
              xmlns:models="clr-namespace:VPGUI.Models"
              xmlns:validationRules="clr-namespace:VPGUI.ValidationRules"
+             xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -43,11 +44,9 @@
         </ItemsControl>
 
         <ListView ItemsSource="{Binding DirectoryListModel.Entries}" Margin="0" Grid.Row="1"
-                  AllowDrop="True" DragEnter="vpListView_DragEnter_1"
-                  DragOver="vpListView_DragOver_1" Drop="vpListView_Drop_1" Height="Auto"
-                  Style="{DynamicResource VirtualisedListView}" SelectionMode="Extended">
-            <ListView.InputBindings>
-            </ListView.InputBindings>
+                  Height="Auto" Style="{DynamicResource VirtualisedListView}" SelectionMode="Extended"
+                  x:Name="VpListView" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
+                  dd:DragDrop.DragHandler="{Binding ListDNDHandler}" dd:DragDrop.DropHandler="{Binding ListDNDHandler}">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
                     <Style.Resources>
@@ -59,30 +58,38 @@
                     <EventSetter Event="MouseDoubleClick" Handler="vpListViewEntry_MouseDoubleClick_1" />
                 </Style>
             </ListView.ItemContainerStyle>
+            
+            <ListView.ContextMenu>
+                <ContextMenu>
+                    <MenuItem Header="Rename" Command="{Binding RenameCommand}" InputGestureText="Del" />
+                    <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" InputGestureText="Del" />
+                </ContextMenu>
+            </ListView.ContextMenu>
 
             <ListView.View>
-                <GridView AllowsColumnReorder="False"
-                          d:DataContext="{d:DesignInstance models:VpListEntryViewModel}">
+                <GridView AllowsColumnReorder="False">
                     <GridViewColumn Width="120" Header="Name">
                         <GridViewColumn.CellTemplate>
-                            <DataTemplate>
+                            <DataTemplate DataType="models:VpListEntryViewModel">
                                 <VirtualizingStackPanel Orientation="Horizontal">
                                     <Image Width="16" Height="16" Stretch="Uniform"
                                            Source="{Binding EntryIcon}" />
-                                    <TextBlock Text="{Binding Name}" Margin="4,2,4,2" />
+                                    <TextBlock Text="{Binding Name}" Margin="4,2,4,2"
+                                               Visibility="{Binding IsEditing, Converter={StaticResource InverseBooleanToVisiblity}}"/>
 
                                     <TextBox Text="{Binding Name, Mode=TwoWay}"
                                              Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisiblity}}"
-                                             LostFocus="ListViewEditBox_OnLostFocus" />
+                                             IsVisibleChanged="ListViewEditBox_OnIsVisibleChange"
+                                             LostFocus="ListViewEditBox_OnLostFocus" KeyUp="ListViewEditBox_OnKeyUp"/>
                                 </VirtualizingStackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
                     <GridViewColumn Width="120" Header="Size"
-                                    DisplayMemberBinding="{Binding FileSize}">
+                                    DisplayMemberBinding="{Binding FileSizeString}">
                     </GridViewColumn>
                     <GridViewColumn Width="120" Header="Last Edit"
-                                    DisplayMemberBinding="{Binding LastEdit}">
+                                    DisplayMemberBinding="{Binding LastEditString}">
                     </GridViewColumn>
                 </GridView>
             </ListView.View>

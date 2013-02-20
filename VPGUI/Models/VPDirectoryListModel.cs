@@ -88,10 +88,12 @@ namespace VPGUI.Models
             if (str == "LastModified" || str == "LastModified")
             {
                 OnPropertyChanged("LastEdit");
+                OnPropertyChanged("LastEditString");
             }
             else if (str == "FileSize" || str == "AggregatedFileSize")
             {
                 OnPropertyChanged("FileSize");
+                OnPropertyChanged("FileSizeString");
             }
         }
 
@@ -115,35 +117,37 @@ namespace VPGUI.Models
             }
         }
 
-        public string FileSize
+        public string FileSizeString
         {
             get
             {
-                var entry = this.Entry as VPDirectoryEntry;
-                if (entry != null)
-                {
-                    return ((long) entry.AggregatedFileSize).HumanReadableByteCount(false);
-                }
-                else
-                {
-                    return ((long) ((VPFileEntry) this.Entry).FileSize).HumanReadableByteCount(false);
-                }
+                return ((long) FileSize).HumanReadableByteCount(false);
             }
         }
 
-        public string LastEdit
+        public int FileSize
         {
             get
             {
                 var entry = this.Entry as VPDirectoryEntry;
-                if (entry != null)
-                {
-                    return entry.LastModified.ToLocalTime().ToString(CultureInfo.CurrentUICulture);
-                }
-                else
-                {
-                    return ((VPFileEntry) this.Entry).LastModified.ToLocalTime().ToString(CultureInfo.CurrentUICulture);
-                }
+                return entry != null ? entry.AggregatedFileSize : ((VPFileEntry) this.Entry).FileSize;
+            }
+        }
+
+        public string LastEditString
+        {
+            get
+            {
+                return LastEdit.ToLocalTime().ToString(CultureInfo.CurrentUICulture);
+            }
+        }
+
+        public DateTime LastEdit
+        {
+            get
+            {
+                var entry = this.Entry as VPDirectoryEntry;
+                return entry != null ? entry.LastModified : ((VPFileEntry) this.Entry).LastModified;
             }
         }
     }

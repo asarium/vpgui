@@ -88,6 +88,7 @@ namespace VPGUI.UserControls
             e.Effects = DragDropEffects.Copy;
         }
 
+        #region ListViewEditBox
 
         private void ListViewEditBox_OnLostFocus(object sender, RoutedEventArgs e)
         {
@@ -97,9 +98,33 @@ namespace VPGUI.UserControls
             {
                 var item = box.DataContext as VpEntryView<VPEntry>;
 
-                item.IsEditing = false;
+                if (item != null)
+                {
+                    item.IsEditing = false;
+                }
             }
         }
+
+        private void ListViewEditBox_OnIsVisibleChange(object sender, DependencyPropertyChangedEventArgs e)
+        {
+            var box = sender as TextBox;
+
+            if (box != null)
+            {
+                box.Focus();
+                box.SelectAll();
+            }
+        }
+
+        private void ListViewEditBox_OnKeyUp(object sender, KeyEventArgs e)
+        {
+            if (e.Key == Key.Escape)
+            {
+                this.VpListView.Focus();
+            }
+        }
+
+        #endregion
 
         #endregion
     }
