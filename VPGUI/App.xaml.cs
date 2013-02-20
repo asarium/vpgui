@@ -64,7 +64,7 @@ namespace VPGUI
 
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("Unhandled Exception:\n" + e.Exception.Message + "\n" + e.Exception.StackTrace,
+            MessageBox.Show("Unhandled Exception:\n" + e.Exception.ToString(),
                             "Unhandled Exception!");
 
             Process.GetCurrentProcess().Kill();
