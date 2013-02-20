@@ -5,11 +5,11 @@ namespace VPSharp.Utilities
 {
     internal static class Util
     {
-        public static int GetFittingIndex<T>(this ICollection<T> enumerable, T element) where T : IComparable<T>
+        public static int GetFittingIndex<T>(this IEnumerable<T> enumerable, T element) where T : IComparable<T>
         {
-            int index = 0;
+            var index = 0;
 
-            foreach (T item in enumerable)
+            foreach (var item in enumerable)
             {
                 if (element.CompareTo(item) < 0)
                 {
