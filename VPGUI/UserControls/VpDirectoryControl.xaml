@@ -6,6 +6,7 @@
              xmlns:models="clr-namespace:VPGUI.Models"
              xmlns:validationRules="clr-namespace:VPGUI.ValidationRules"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
+             xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -46,7 +47,8 @@
         <ListView ItemsSource="{Binding DirectoryListModel.Entries}" Margin="0" Grid.Row="1"
                   Height="Auto" Style="{DynamicResource VirtualisedListView}" SelectionMode="Extended"
                   x:Name="VpListView" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
-                  dd:DragDrop.DragHandler="{Binding ListDNDHandler}" dd:DragDrop.DropHandler="{Binding ListDNDHandler}">
+                  dd:DragDrop.DragHandler="{Binding ListDNDHandler}" dd:DragDrop.DropHandler="{Binding ListDNDHandler}"
+                  listViewLayout:ListViewLayoutManager.Enabled="True">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
                     <Style.Resources>
@@ -68,7 +70,8 @@
 
             <ListView.View>
                 <GridView AllowsColumnReorder="False">
-                    <GridViewColumn Width="120" Header="Name">
+                    <GridViewColumn Header="Name"
+                                    listViewLayout:RangeColumn.MinWidth="200">
                         <GridViewColumn.CellTemplate>
                             <DataTemplate DataType="models:VpListEntryViewModel">
                                 <VirtualizingStackPanel Orientation="Horizontal">
@@ -85,11 +88,15 @@
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>
                     </GridViewColumn>
-                    <GridViewColumn Width="120" Header="Size"
-                                    DisplayMemberBinding="{Binding FileSizeString}">
+                    <GridViewColumn Header="Size"
+                                    DisplayMemberBinding="{Binding FileSizeString}"
+                                    listViewLayout:RangeColumn.MaxWidth="200"
+                                    listViewLayout:RangeColumn.MinWidth="100">
                     </GridViewColumn>
-                    <GridViewColumn Width="120" Header="Last Edit"
-                                    DisplayMemberBinding="{Binding LastEditString}">
+                    <GridViewColumn Header="Last Edit"
+                                    DisplayMemberBinding="{Binding LastEditString}"
+                                    listViewLayout:RangeColumn.MaxWidth="200"
+                                    listViewLayout:RangeColumn.MinWidth="100">
                     </GridViewColumn>
                 </GridView>
             </ListView.View>

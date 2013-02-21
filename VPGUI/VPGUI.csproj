@@ -214,6 +214,10 @@
       <Project>{2ccebd48-4f1e-4910-a671-6087abccee6f}</Project>
       <Name>EnumTools</Name>
     </ProjectReference>
+    <ProjectReference Include="..\ListViewLayout\ListViewLayout.csproj">
+      <Project>{916a9879-3f2d-471f-aafa-28f0c8a7ffa9}</Project>
+      <Name>ListViewLayout</Name>
+    </ProjectReference>
     <ProjectReference Include="..\Ookii.Dialogs.Wpf\Ookii.Dialogs.Wpf.csproj">
       <Project>{d01b1d20-8f5b-4834-8e5c-c7ec6dd587d4}</Project>
       <Name>Ookii.Dialogs.Wpf</Name>
