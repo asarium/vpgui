@@ -4,12 +4,13 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
+using System.Windows.Input;
 using GongSolutions.Wpf.DragDrop;
 using VPSharp.Entries;
 
 namespace VPGUI.Models
 {
-    public class ListDragDropHandler : IDropTarget, IDragSource
+    public class ListDragDropHandler : IDropTarget
     {
         private readonly MainModel ApplicationModel;
 
@@ -18,22 +19,12 @@ namespace VPGUI.Models
             this.ApplicationModel = applicationModel;
         }
 
-        public void StartDrag(IDragInfo dragInfo)
-        {
-        }
-
-        public void Dropped(IDropInfo dropInfo)
-        {
-        }
-
         public void DragOver(IDropInfo dropInfo)
         {
             if (ApplicationModel.CurrentVpFile == null)
             {
                 dropInfo.Effects = DragDropEffects.None;
             }
-
-            var targetItem = dropInfo.TargetItem as VPTreeEntryViewModel;
 
             var obj = dropInfo.Data as IDataObject;
             if (obj != null)
@@ -49,26 +40,24 @@ namespace VPGUI.Models
             }
             else
             {
-                var entryView = dropInfo.Data as VpEntryView<VPEntry>;
+                var source = dropInfo.DragInfo.SourceItems;
+                var castItems = from object entry in source select entry as VpEntryView<VPEntry>;
 
-                if (entryView != null)
+                var vpEntryViews = castItems as IList<VpEntryView<VPEntry>> ?? castItems.ToList();
+                if (vpEntryViews.Any(entryView => entryView == null))
                 {
-                    if (targetItem != null && entryView.Entry == targetItem.Entry)
-                    {
-                        dropInfo.Effects = DragDropEffects.None;
-                    }
-                    else if (dropInfo.KeyStates == DragDropKeyStates.ControlKey)
-                    {
-                        dropInfo.Effects = DragDropEffects.Copy;
-                    }
-                    else
-                    {
-                        dropInfo.Effects = DragDropEffects.Copy;
-                    }
+                    dropInfo.DragInfo.Effects = DragDropEffects.None;
+                    return;
                 }
-                else
+
+                dropInfo.Effects = dropInfo.KeyStates.HasFlag(DragDropKeyStates.ControlKey)
+                                       ? DragDropEffects.Copy : DragDropEffects.Move;
+
+                var target = ApplicationModel.TreeViewModel.SelectedItem.Entry;
+
+                if (vpEntryViews.Any(entry => entry.Entry == target))
                 {
-                    dropInfo.Effects = DragDropEffects.None;
+                    dropInfo.DragInfo.Effects = DragDropEffects.None;
                 }
             }
         }
@@ -79,6 +68,18 @@ namespace VPGUI.Models
             if (obj != null)
             {
                 ApplicationModel.AddFilePaths((string[]) obj.GetData(DataFormats.FileDrop));
+            }
+            else
+            {
+                var copy = dropInfo.KeyStates.HasFlag(DragDropKeyStates.ControlKey);
+                var source = dropInfo.DragInfo.SourceItems;
+                var castItems = from object entry in source select (entry as VpEntryView<VPEntry>).Entry;
+
+                var target = ApplicationModel.TreeViewModel.SelectedItem.Entry;
+                foreach (var entry in castItems)
+                {
+                    target.AddChild(entry, !copy);
+                }
             }
         }
     }

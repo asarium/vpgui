@@ -9,21 +9,15 @@ using VPSharp.Entries;
 
 namespace VPGUI.Models
 {
-    public class TreeDragDropHandler : IDragSource, IDropTarget
+    public class TreeDragDropHandler : IDropTarget
     {
+        private const int ExpandTime = 800;
+
         private readonly MainModel ApplicationModel;
 
         public TreeDragDropHandler(MainModel applicationModel)
         {
             this.ApplicationModel = applicationModel;
-        }
-
-        public void StartDrag(IDragInfo dragInfo)
-        {
-        }
-
-        public void Dropped(IDropInfo dropInfo)
-        {
         }
 
         private DateTime _dragOverBegin = DateTime.MinValue;
@@ -49,7 +43,7 @@ namespace VPGUI.Models
 
                 this._dragOverBegin = dropInfo.TargetItem != null ? DateTime.UtcNow : DateTime.MinValue;
             }
-            else if (_dragOverItem != null && (DateTime.UtcNow - this._dragOverBegin).TotalMilliseconds > 1000)
+            else if (_dragOverItem != null && (DateTime.UtcNow - this._dragOverBegin).TotalMilliseconds > ExpandTime)
             {
                 if (targetItem != null)
                 {
@@ -63,15 +57,6 @@ namespace VPGUI.Models
                 if (obj.GetDataPresent(DataFormats.FileDrop))
                 {
                     dropInfo.Effects = DragDropEffects.Copy;
-
-                    if (dropInfo.TargetItem != null)
-                    {
-                        dropInfo.DropTargetAdorner = DropTargetAdorners.Highlight;
-                    }
-                    else
-                    {
-                        dropInfo.DropTargetAdorner = DropTargetAdorners.Insert;
-                    }
                 }
                 else
                 {
@@ -88,13 +73,13 @@ namespace VPGUI.Models
                     {
                         dropInfo.Effects = DragDropEffects.None;
                     }
-                    else if (dropInfo.KeyStates == DragDropKeyStates.ControlKey)
+                    else if (dropInfo.KeyStates.HasFlag(DragDropKeyStates.ControlKey))
                     {
                         dropInfo.Effects = DragDropEffects.Copy;
                     }
                     else
                     {
-                        dropInfo.Effects = DragDropEffects.Copy;
+                        dropInfo.Effects = DragDropEffects.Move;
                     }
                 }
                 else
@@ -102,6 +87,8 @@ namespace VPGUI.Models
                     dropInfo.Effects = DragDropEffects.None;
                 }
             }
+
+            dropInfo.DropTargetAdorner = dropInfo.TargetItem != null ? DropTargetAdorners.Highlight : DropTargetAdorners.Insert;
         }
 
         public void Drop(IDropInfo dropInfo)
@@ -109,27 +96,33 @@ namespace VPGUI.Models
             var targetItem = (VPTreeEntryViewModel) dropInfo.TargetItem;
 
             var obj = dropInfo.Data as IDataObject;
-            if (obj != null)
+
+            if (obj == null)
             {
-                var paths = (string[]) obj.GetData(DataFormats.FileDrop);
+                return;
+            }
 
-                if (targetItem == null)
+            var paths = (string[]) obj.GetData(DataFormats.FileDrop);
+
+            if (targetItem == null)
+            {
+                VPDirectoryEntry parent = null;
+                var enumerator = dropInfo.TargetCollection.GetEnumerator();
+
+                if (enumerator.MoveNext())
                 {
-                    VPDirectoryEntry parent = null;
-                    var enumerator = dropInfo.TargetCollection.GetEnumerator();
-
-                    if (enumerator.MoveNext())
-                    {
-                        parent = ((VPTreeEntryViewModel) enumerator.Current).Entry.Parent;
-                    }
-
-                    if (parent == null)
-                    {
-                        parent = ApplicationModel.CurrentVpFile.RootNode;
-                    }
-
-                    ApplicationModel.AddFilePaths(paths, parent);
+                    parent = ((VPTreeEntryViewModel) enumerator.Current).Entry.Parent;
                 }
+
+                if (parent == null)
+                {
+                    parent = this.ApplicationModel.CurrentVpFile.RootNode;
+                }
+
+                this.ApplicationModel.AddFilePaths(paths, parent);
+            }
+            else
+            {
             }
         }
     }

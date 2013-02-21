@@ -123,14 +123,14 @@ namespace VPSharp.Entries
         ///     Adds a child to this directory. Also sets a new parent for the specified entry.
         /// </summary>
         /// <param name="entry">The entry which will be added.</param>
-        public bool AddChild(VPEntry entry)
+        public bool AddChild(VPEntry entry, bool remove = true)
         {
             if (Children.Any(item => item == entry || item.Name == entry.Name))
             {
                 throw new ArgumentException("Item already exists.");
             }
 
-            if (entry.Parent != null)
+            if (remove && entry.Parent != null)
             {
                 entry.Parent.RemoveChild(entry);
             }
