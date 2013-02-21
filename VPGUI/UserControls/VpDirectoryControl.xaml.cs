@@ -49,43 +49,13 @@ namespace VPGUI.UserControls
 
         private void vpListViewEntry_MouseDoubleClick_1(object sender, MouseButtonEventArgs e)
         {
-            ListViewItem item = sender as ListViewItem;
+            var item = sender as ListViewItem;
 
             if (item != null && item.Content is VpEntryView<VPEntry>)
             {
                 var vpEntryView = item.Content as VpEntryView<VPEntry>;
                 this.ApplicationModel.OpenEntry(vpEntryView.Entry, vpEntryView);
             }
-        }
-
-        private void vpListView_Drop_1(object sender, DragEventArgs e)
-        {
-            if (e.Data.GetDataPresent(DataFormats.FileDrop))
-            {
-                foreach (string dropPath in (string[]) e.Data.GetData(DataFormats.FileDrop))
-                {
-                    this.ApplicationModel.AddFilePath(dropPath).ContinueWith(task =>
-                    {
-                        if (task.Exception != null)
-                        {
-                            this.ApplicationModel.StatusMessage = "Couldn't add entry: " +
-                                                                  Util.GetAggregateExceptionMessage(task.Exception);
-                        }
-                    });
-                }
-            }
-        }
-
-        private void vpListView_DragEnter_1(object sender, DragEventArgs e)
-        {
-            e.Handled = true;
-            e.Effects = DragDropEffects.Copy;
-        }
-
-        private void vpListView_DragOver_1(object sender, DragEventArgs e)
-        {
-            e.Handled = true;
-            e.Effects = DragDropEffects.Copy;
         }
 
         #region ListViewEditBox
