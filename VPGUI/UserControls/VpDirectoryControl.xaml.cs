@@ -95,6 +95,10 @@ namespace VPGUI.UserControls
         }
 
         #endregion
+        
+        private void VpDirectoryControl_OnLoaded(object sender, RoutedEventArgs e)
+        {
+        }
 
         #endregion
     }

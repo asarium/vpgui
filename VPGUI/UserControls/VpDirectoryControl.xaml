@@ -9,7 +9,7 @@
              xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
              xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
-             d:DesignHeight="300" d:DesignWidth="300">
+             d:DesignHeight="300" d:DesignWidth="300" Loaded="VpDirectoryControl_OnLoaded">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -63,7 +63,7 @@
                          Margin="3"/>
         </Grid>
 
-        <ListView ItemsSource="{Binding DirectoryListModel.Entries}" Margin="0" Grid.Row="1"
+        <ListView ItemsSource="{Binding DirectoryListModel.Entries, IsAsync=True}" Margin="0" Grid.Row="1"
                   Height="Auto" Style="{DynamicResource VirtualisedListView}" SelectionMode="Extended"
                   x:Name="VpListView" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                   dd:DragDrop.DropHandler="{Binding ListDNDHandler}"
