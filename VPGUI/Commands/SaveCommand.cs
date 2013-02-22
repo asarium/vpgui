@@ -28,7 +28,12 @@ namespace VPGUI.Commands
 
                         this.FileInstance = this.ApplicationModel.CurrentVpFile;
 
-                        this.FileInstance.RootNode.PropertyChanged += this.RootNodeOnPropertyChanged;
+                        if (FileInstance != null)
+                        {
+                            this.FileInstance.RootNode.PropertyChanged += this.RootNodeOnPropertyChanged;
+                        }
+
+                        FireCanExecuteChanged();
                     }
                 };
         }
@@ -43,48 +48,43 @@ namespace VPGUI.Commands
 
         public override bool CanExecute(object parameter)
         {
-            if (this.FileInstance != null)
-            {
-                return this.FileInstance.RootNode.Changed;
-            }
-            else
-            {
-                return false;
-            }
+            return this.FileInstance != null && this.FileInstance.RootNode.Changed;
         }
 
         public override void Execute(object parameter)
         {
-            if (this.FileInstance != null)
+            if (this.FileInstance == null)
             {
-                this.ApplicationModel.IsBusy = true;
-                this.ApplicationModel.BusyMessage = "Saving file...";
-
-                this.FileInstance.WriteVPAsync(null, this.BackupCallback).ContinueWith((task) =>
-                    {
-                        if (task.Exception != null)
-                        {
-                            this.ApplicationModel.InteractionService.ShowMessage(MessageType.Error,
-                                                                                 "Error while writing file",
-                                                                                 "Error while writing VP file:" +
-                                                                                 Util.GetAggregateExceptionMessage(
-                                                                                     task.Exception));
-
-                            this.ApplicationModel.StatusMessage = "Failed to save VP-file.";
-                        }
-                        else
-                        {
-                            this.ApplicationModel.InteractionService.ShowMessage(MessageType.Information,
-                                                                                 "Writing completed",
-                                                                                 "VP-file was successfully written.");
-
-                            this.ApplicationModel.StatusMessage = String.Format("VP-file successfully saved to {0}.",
-                                                                                task.Result);
-                        }
-
-                        this.ApplicationModel.IsBusy = false;
-                    }, TaskScheduler.FromCurrentSynchronizationContext());
+                return;
             }
+
+            this.ApplicationModel.IsBusy = true;
+            this.ApplicationModel.BusyMessage = "Saving file...";
+
+            this.FileInstance.WriteVPAsync(null, this.BackupCallback).ContinueWith((task) =>
+                {
+                    if (task.Exception != null)
+                    {
+                        this.ApplicationModel.InteractionService.ShowMessage(MessageType.Error,
+                                                                             "Error while writing file",
+                                                                             "Error while writing VP file:" +
+                                                                             Util.GetAggregateExceptionMessage(
+                                                                                 task.Exception));
+
+                        this.ApplicationModel.StatusMessage = "Failed to save VP-file.";
+                    }
+                    else
+                    {
+                        this.ApplicationModel.InteractionService.ShowMessage(MessageType.Information,
+                                                                             "Writing completed",
+                                                                             "VP-file was successfully written.");
+
+                        this.ApplicationModel.StatusMessage = String.Format("VP-file successfully saved to {0}.",
+                                                                            task.Result);
+                    }
+
+                    this.ApplicationModel.IsBusy = false;
+                }, TaskScheduler.FromCurrentSynchronizationContext());
         }
 
         protected bool BackupCallback(FileInfo info)

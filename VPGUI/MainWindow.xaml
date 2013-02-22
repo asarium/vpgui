@@ -107,6 +107,7 @@
                         <MenuItem Header="Save" InputGestureText="Ctrl+Shift+S" Command="{Binding SaveCommand}" />
                         <MenuItem Header="Save As" InputGestureText="Ctrl+S" Command="{Binding SaveAsCommand}" />
                         <Separator />
+                        <MenuItem Header="Close File" Command="{Binding CloseFileCommand}" />
                         <MenuItem Header="Close" Command="{Binding CloseCommand}" />
                     </MenuItem>
 

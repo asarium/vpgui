@@ -163,7 +163,10 @@ namespace VPGUI.Models
 
                     this._treeViewModel = value;
 
-                    this._treeViewModel.PropertyChanged += this.TreeViewModelOnPropertyChanged;
+                    if (_treeViewModel != null)
+                    {
+                        this._treeViewModel.PropertyChanged += this.TreeViewModelOnPropertyChanged;
+                    }
 
                     this.OnPropertyChanged();
                 }
@@ -174,7 +177,7 @@ namespace VPGUI.Models
         {
             get { return this._directoryListModel; }
 
-            set
+            private set
             {
                 if (this._directoryListModel != value)
                 {
@@ -189,7 +192,7 @@ namespace VPGUI.Models
         {
             get { return this._selectedHistory; }
 
-            internal set
+            private set
             {
                 if (this._selectedHistory != null)
                 {
@@ -198,7 +201,10 @@ namespace VPGUI.Models
 
                 this._selectedHistory = value;
 
-                this._selectedHistory.PropertyChanged += this.SelectedHistoryOnPropertyChanged;
+                if (_selectedHistory != null)
+                {
+                    this._selectedHistory.PropertyChanged += this.SelectedHistoryOnPropertyChanged;
+                }
 
                 this.OnPropertyChanged();
             }
@@ -208,7 +214,7 @@ namespace VPGUI.Models
         {
             get { return this._messagesModel; }
 
-            set
+            private set
             {
                 if (this._messagesModel != value)
                 {
@@ -415,6 +421,19 @@ namespace VPGUI.Models
             }
         }
 
+        public ICommand CloseFileCommand
+        {
+            get
+            {
+                if (_closeFileCommand == null)
+                {
+                    _closeFileCommand = new CloseFileCommand(this);
+                }
+
+                return _closeFileCommand;
+            }
+        }
+
         #endregion
 
         private void Close()
@@ -531,9 +550,18 @@ namespace VPGUI.Models
             }
             else if (e.PropertyName == "TreeViewModel")
             {
-                this.SelectedHistory = new SelectedHistory();
+                if (TreeViewModel != null)
+                {
+                    this.SelectedHistory = new SelectedHistory();
 
-                this.DirectoryListModel = new VpDirectoryListModel(this.TreeViewModel.SelectedItem);
+                    this.DirectoryListModel = new VpDirectoryListModel(this.TreeViewModel.SelectedItem);
+                }
+                else
+                {
+                    this.SelectedHistory = null;
+
+                    this.DirectoryListModel = null;
+                }
             }
         }
 
@@ -586,27 +614,27 @@ namespace VPGUI.Models
                 extractPath = GetExtractionLocation(this.CurrentVpFile);
             }
 
-            string subPath = entry.Path;
+            var subPath = entry.Path;
             if (parentEntry != null)
             {
                 subPath = subPath.Remove(0, parentEntry.Path.Length);
             }
 
-            string path = extractPath + subPath;
+            var path = extractPath + subPath;
 
-            DirectoryInfo directoryInfo = new FileInfo(path).Directory;
+            var directoryInfo = new FileInfo(path).Directory;
             if (directoryInfo != null && !directoryInfo.Exists)
             {
                 directoryInfo.Create();
             }
 
-            VPFileEntry fileEntry = entry as VPFileEntry;
+            var fileEntry = entry as VPFileEntry;
 
             if (fileEntry != null)
             {
-                using (FileStream stream = new FileStream(path, FileMode.Create))
+                using (var stream = new FileStream(path, FileMode.Create))
                 {
-                    using (Stream st = fileEntry.OpenFileStream())
+                    using (var st = fileEntry.OpenFileStream())
                     {
                         await st.CopyToAsync(stream);
                     }
@@ -614,11 +642,11 @@ namespace VPGUI.Models
             }
             else
             {
-                VPDirectoryEntry dirEntry = entry as VPDirectoryEntry;
+                var dirEntry = entry as VPDirectoryEntry;
 
                 if (dirEntry != null)
                 {
-                    foreach (VPEntry child in dirEntry.Children)
+                    foreach (var child in dirEntry.Children)
                     {
                         await this.ExtractEntryAsync(child, extractPath, parentEntry);
                     }
@@ -628,20 +656,20 @@ namespace VPGUI.Models
             return path;
         }
 
-        public void OpenEntry(VPEntry entry, VpEntryView<VPEntry> viewEntry = null)
+        public void OpenEntry(VPEntry entry, IEntryView<VPEntry> viewEntry = null)
         {
-            VPFileEntry fileEntry = entry as VPFileEntry;
+            var fileEntry = entry as VPFileEntry;
             if (fileEntry != null)
             {
                 this.OpenFileEntry(fileEntry);
             }
             else
             {
-                VPDirectoryEntry directoryEntry = entry as VPDirectoryEntry;
+                var directoryEntry = entry as VPDirectoryEntry;
 
                 if (directoryEntry != null)
                 {
-                    VpListDirEntryModel modelEntry = viewEntry as VpListDirEntryModel;
+                    var modelEntry = viewEntry as VpListDirEntryModel;
 
                     if (modelEntry != null)
                     {
@@ -712,7 +740,7 @@ namespace VPGUI.Models
 
             if (parent == null)
             {
-                VPTreeEntryViewModel currentDir = this.TreeViewModel.SelectedItem;
+                VpTreeEntryViewModel currentDir = this.TreeViewModel.SelectedItem;
 
                 dir = currentDir.Entry;
             }

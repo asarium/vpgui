@@ -51,9 +51,12 @@ namespace VPGUI.UserControls
 
         private void VpTreeView_OnSelectedItemChanged(object sender, RoutedPropertyChangedEventArgs<object> e)
         {
-            var val = e.NewValue as VPTreeEntryViewModel;
+            var val = e.NewValue as VpTreeEntryViewModel;
 
-            this.ApplicationModel.SelectedHistory.AddHistoryEntry(val);
+            if (val != null && ApplicationModel.SelectedHistory != null)
+            {
+                this.ApplicationModel.SelectedHistory.AddHistoryEntry(val);
+            }
         }
 
         #endregion
