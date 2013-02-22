@@ -11,19 +11,19 @@ namespace VPGUI.Models
 {
     public class VpDirectoryListModel : INotifyPropertyChanged
     {
-        private readonly Lazy<ObservableCollection<VpEntryView<VPEntry>>> _entryViews;
+        private readonly Lazy<ObservableCollection<IEntryView<VPEntry>>> _entryViews;
 
         private readonly Lazy<ObservableCollection<VpListEntryViewModel>> _selectedEntries;
-        private VPTreeEntryViewModel dirEntry;
+        private VpTreeEntryViewModel dirEntry;
 
-        public VpDirectoryListModel(VPTreeEntryViewModel entry)
+        public VpDirectoryListModel(VpTreeEntryViewModel entry)
         {
             this.dirEntry = entry;
 
-            Func<VPEntry, VpEntryView<VPEntry>> viewModelCreator = this.GetEntryItem;
+            Func<VPEntry, IEntryView<VPEntry>> viewModelCreator = this.GetEntryItem;
             this._entryViews =
-                new Lazy<ObservableCollection<VpEntryView<VPEntry>>>(() => new ObservableViewModelCollection
-                                                                               <VpEntryView<VPEntry>, VPEntry>(
+                new Lazy<ObservableCollection<IEntryView<VPEntry>>>(() => new ObservableViewModelCollection
+                                                                               <IEntryView<VPEntry>, VPEntry>(
                                                                                this.dirEntry.Entry.Children,
                                                                                viewModelCreator));
 
@@ -31,7 +31,7 @@ namespace VPGUI.Models
                 (() => new ObservableCollection<VpListEntryViewModel>());
         }
 
-        public ObservableCollection<VpEntryView<VPEntry>> Entries
+        public ObservableCollection<IEntryView<VPEntry>> Entries
         {
             get { return this._entryViews.Value; }
         }
@@ -55,7 +55,7 @@ namespace VPGUI.Models
             }
         }
 
-        private VpEntryView<VPEntry> GetEntryItem(VPEntry item)
+        private IEntryView<VPEntry> GetEntryItem(VPEntry item)
         {
             if (item is VPFileEntry)
             {
@@ -67,7 +67,7 @@ namespace VPGUI.Models
             }
         }
 
-        private VPTreeEntryViewModel GetTreeEntryForDirectory(VPDirectoryEntry searched)
+        private VpTreeEntryViewModel GetTreeEntryForDirectory(VPDirectoryEntry searched)
         {
             return this.dirEntry.Children.FirstOrDefault(treeEntry => treeEntry.Entry == searched);
         }
@@ -156,20 +156,20 @@ namespace VPGUI.Models
     {
         #region Delegates
 
-        public delegate VPTreeEntryViewModel CreationDelegate(VPDirectoryEntry entry);
+        public delegate VpTreeEntryViewModel CreationDelegate(VPDirectoryEntry entry);
 
         #endregion
 
-        private Lazy<VPTreeEntryViewModel> _treeModelEntry;
+        private Lazy<VpTreeEntryViewModel> _treeModelEntry;
 
         public VpListDirEntryModel(VpDirectoryListModel parentModel,
                                    CreationDelegate creationFunc, VPDirectoryEntry entry)
             : base(parentModel, entry)
         {
-            this._treeModelEntry = new Lazy<VPTreeEntryViewModel>(() => creationFunc((VPDirectoryEntry) this.Entry));
+            this._treeModelEntry = new Lazy<VpTreeEntryViewModel>(() => creationFunc((VPDirectoryEntry) this.Entry));
         }
 
-        public VPTreeEntryViewModel TreeModelDirEntry
+        public VpTreeEntryViewModel TreeModelDirEntry
         {
             get { return this._treeModelEntry.Value; }
         }

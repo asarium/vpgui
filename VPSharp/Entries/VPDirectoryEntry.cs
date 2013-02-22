@@ -353,20 +353,29 @@ namespace VPSharp.Entries
         /// <returns>The entry of null if it could not be found.</returns>
         public VPEntry GetByName(string name)
         {
-            foreach (VPEntry entry in this.ChildrenRecursive())
-            {
-                if (entry.Name == name)
-                {
-                    return entry;
-                }
-            }
-
-            return null;
+            return this.ChildrenRecursive().FirstOrDefault(entry => entry.Name == name);
         }
 
         internal void RecalculateChangedStatus()
         {
             this.Changed = Children.Any(entry => entry.Changed);
+        }
+
+        public bool HasSubdirectory(VPDirectoryEntry vpEntry)
+        {
+            foreach (var dir in SubDirectories)
+            {
+                if (dir == vpEntry)
+                {
+                    return true;
+                }
+                else
+                {
+                    dir.HasSubdirectory(vpEntry);
+                }
+            }
+
+            return false;
         }
     }
 }

@@ -11,11 +11,11 @@ namespace VPGUI.Models
 
         public SelectedHistory()
         {
-            this.SelectedEntries = new ObservableCollection<VPTreeEntryViewModel>();
+            this.SelectedEntries = new ObservableCollection<VpTreeEntryViewModel>();
             this.CurrentIndex = 0;
         }
 
-        public ObservableCollection<VPTreeEntryViewModel> SelectedEntries { get; internal set; }
+        public ObservableCollection<VpTreeEntryViewModel> SelectedEntries { get; internal set; }
 
         public int CurrentIndex
         {
@@ -34,7 +34,7 @@ namespace VPGUI.Models
             }
         }
 
-        public VPTreeEntryViewModel CurrentEntry
+        public VpTreeEntryViewModel CurrentEntry
         {
             get
             {
@@ -65,7 +65,7 @@ namespace VPGUI.Models
             }
         }
 
-        public void AddHistoryEntry(VPTreeEntryViewModel viewModel)
+        public void AddHistoryEntry(VpTreeEntryViewModel viewModel)
         {
             if (!this.SuppressNewEntries)
             {

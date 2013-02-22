@@ -51,9 +51,9 @@ namespace VPGUI.UserControls
         {
             var item = sender as ListViewItem;
 
-            if (item != null && item.Content is VpEntryView<VPEntry>)
+            if (item != null && item.Content is IEntryView<VPEntry>)
             {
-                var vpEntryView = item.Content as VpEntryView<VPEntry>;
+                var vpEntryView = item.Content as IEntryView<VPEntry>;
                 this.ApplicationModel.OpenEntry(vpEntryView.Entry, vpEntryView);
             }
         }
@@ -66,7 +66,7 @@ namespace VPGUI.UserControls
 
             if (box != null)
             {
-                var item = box.DataContext as VpEntryView<VPEntry>;
+                var item = box.DataContext as IEntryView<VPEntry>;
 
                 if (item != null)
                 {

@@ -34,7 +34,7 @@
                 </ItemsPanelTemplate>
             </ItemsControl.ItemsPanel>
             <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="models:VPTreeEntryViewModel">
+                <DataTemplate DataType="models:VpTreeEntryViewModel">
                     <StackPanel Orientation="Horizontal">
                         <TextBlock Text="{Binding Name}" FontSize="14" Foreground="{DynamicResource BlackBrush}" />
 

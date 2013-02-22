@@ -12,13 +12,13 @@ namespace VPGUI.Models
 {
     public class VpTreeViewModel : INotifyPropertyChanged
     {
-        private VPTreeEntryViewModel _rootEntry;
+        private VpTreeEntryViewModel _rootEntry;
 
-        private VPTreeEntryViewModel _selectedItem;
+        private VpTreeEntryViewModel _selectedItem;
 
         public VpTreeViewModel(VPDirectoryEntry root)
         {
-            this._rootEntry = new VPTreeEntryViewModel(this, root);
+            this._rootEntry = new VpTreeEntryViewModel(this, root);
 
             if (this._rootEntry.Children.Count > 0)
             {
@@ -26,12 +26,12 @@ namespace VPGUI.Models
             }
         }
 
-        public ObservableCollection<VPTreeEntryViewModel> TopLevel
+        public ObservableCollection<VpTreeEntryViewModel> TopLevel
         {
             get { return this._rootEntry.Children; }
         }
 
-        public VPTreeEntryViewModel SelectedItem
+        public VpTreeEntryViewModel SelectedItem
         {
             get { return this._selectedItem; }
 
@@ -61,31 +61,31 @@ namespace VPGUI.Models
         }
     }
 
-    public class VPTreeEntryViewModel : VpEntryView<VPDirectoryEntry>
+    public class VpTreeEntryViewModel : VpEntryView<VPDirectoryEntry>
     {
-        private readonly Lazy<ObservableCollection<VPTreeEntryViewModel>> _treeEntryViews;
+        private readonly Lazy<ObservableCollection<VpTreeEntryViewModel>> _treeEntryViews;
         private bool _isExpanded;
 
-        public VPTreeEntryViewModel(VpTreeViewModel viewModel, VPDirectoryEntry entry,
-                                    VPTreeEntryViewModel modelParent = null)
+        public VpTreeEntryViewModel(VpTreeViewModel viewModel, VPDirectoryEntry entry,
+                                    VpTreeEntryViewModel modelParent = null)
             : base(entry)
         {
             this.ViewModel = viewModel;
 
             this.ModelParent = modelParent;
 
-            Func<VPEntry, VPTreeEntryViewModel> viewModelCreator =
-                model => new VPTreeEntryViewModel(this.ViewModel, (VPDirectoryEntry) model, this);
-            this._treeEntryViews = new Lazy<ObservableCollection<VPTreeEntryViewModel>>(
-                () => new ObservableViewModelCollection<VPTreeEntryViewModel, VPDirectoryEntry>
+            Func<VPEntry, VpTreeEntryViewModel> viewModelCreator =
+                model => new VpTreeEntryViewModel(this.ViewModel, (VPDirectoryEntry) model, this);
+            this._treeEntryViews = new Lazy<ObservableCollection<VpTreeEntryViewModel>>(
+                () => new ObservableViewModelCollection<VpTreeEntryViewModel, VPDirectoryEntry>
                           (entry.SubDirectories, viewModelCreator));
         }
 
         public VpTreeViewModel ViewModel { get; internal set; }
 
-        public VPTreeEntryViewModel ModelParent { get; internal set; }
+        public VpTreeEntryViewModel ModelParent { get; internal set; }
 
-        public ObservableCollection<VPTreeEntryViewModel> Children
+        public ObservableCollection<VpTreeEntryViewModel> Children
         {
             get { return this._treeEntryViews.Value; }
         }

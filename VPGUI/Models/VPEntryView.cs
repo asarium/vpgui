@@ -9,7 +9,22 @@ using VPSharp.Entries;
 
 namespace VPGUI.Models
 {
-    public class VpEntryView<TEntryType> : INotifyPropertyChanged where TEntryType : VPEntry
+    public interface IEntryView<out TEntryType> :INotifyPropertyChanged where TEntryType : VPEntry
+    {
+        TEntryType Entry { get; }
+
+        bool IsSelected
+        {
+            get; set;
+        }
+
+        bool IsEditing
+        {
+            get; set;
+        }
+    }
+
+    public class VpEntryView<TEntryType> : IEntryView<TEntryType> where TEntryType : VPEntry
     {
         private bool _isSelected;
 

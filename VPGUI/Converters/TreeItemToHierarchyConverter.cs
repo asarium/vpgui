@@ -12,13 +12,13 @@ namespace VPGUI.Converters
 
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            if (value is VPTreeEntryViewModel)
+            if (value is VpTreeEntryViewModel)
             {
-                VPTreeEntryViewModel entryModel = value as VPTreeEntryViewModel;
+                VpTreeEntryViewModel entryModel = value as VpTreeEntryViewModel;
 
-                var entries = new List<VPTreeEntryViewModel>();
+                var entries = new List<VpTreeEntryViewModel>();
 
-                VPTreeEntryViewModel current = entryModel;
+                VpTreeEntryViewModel current = entryModel;
 
                 while (current != null)
                 {
