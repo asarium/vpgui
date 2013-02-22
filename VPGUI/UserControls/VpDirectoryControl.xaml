@@ -9,7 +9,7 @@
              xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
              xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
-             d:DesignHeight="300" d:DesignWidth="300" Loaded="VpDirectoryControl_OnLoaded">
+             d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
@@ -55,15 +55,15 @@
             </ItemsControl>
 
             <TextBox Grid.Column="1" Grid.Row="0"
-                         controls:TextboxHelper.Watermark="Search"
-                         controls:TextboxHelper.ClearTextButton="True"
-                         VerticalAlignment="Center"
-                         HorizontalAlignment="Stretch"
-                         VerticalContentAlignment="Center"
-                         Margin="3"/>
+                     controls:TextboxHelper.Watermark="Search"
+                     controls:TextboxHelper.ClearTextButton="True"
+                     VerticalAlignment="Center" HorizontalAlignment="Stretch"
+                     VerticalContentAlignment="Center" Margin="3"
+                     Text="{Binding DirectoryListModel.SearchText, Mode=TwoWay, Delay=50, UpdateSourceTrigger=PropertyChanged}" 
+                     TextChanged="TextBoxBase_OnTextChanged"/>
         </Grid>
 
-        <ListView ItemsSource="{Binding DirectoryListModel.Entries, IsAsync=True}" Margin="0" Grid.Row="1"
+        <ListView ItemsSource="{Binding DirectoryListModel.EntriesView, IsAsync=True}" Margin="0" Grid.Row="1"
                   Height="Auto" Style="{DynamicResource VirtualisedListView}" SelectionMode="Extended"
                   x:Name="VpListView" dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
                   dd:DragDrop.DropHandler="{Binding ListDNDHandler}"
@@ -83,7 +83,7 @@
 
             <ListView.ContextMenu>
                 <ContextMenu>
-                    <MenuItem Header="Rename" Command="{Binding RenameCommand}" InputGestureText="Del" />
+                    <MenuItem Header="Rename" Command="{Binding RenameCommand}" InputGestureText="F2" />
                     <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" InputGestureText="Del" />
                 </ContextMenu>
             </ListView.ContextMenu>

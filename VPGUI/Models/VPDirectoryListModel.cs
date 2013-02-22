@@ -4,6 +4,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows.Data;
 using VPGUI.Utilities;
 using VPSharp.Entries;
 
@@ -12,6 +13,7 @@ namespace VPGUI.Models
     public class VpDirectoryListModel : INotifyPropertyChanged
     {
         private readonly Lazy<ObservableCollection<IEntryView<VPEntry>>> _entryViews;
+        private readonly Lazy<ICollectionView> _entryViewSource; 
 
         private readonly Lazy<ObservableCollection<VpListEntryViewModel>> _selectedEntries;
         private VpTreeEntryViewModel dirEntry;
@@ -29,11 +31,50 @@ namespace VPGUI.Models
 
             this._selectedEntries = new Lazy<ObservableCollection<VpListEntryViewModel>>
                 (() => new ObservableCollection<VpListEntryViewModel>());
+
+            _entryViewSource = new Lazy<ICollectionView>(() =>
+                {
+                    var source = CollectionViewSource.GetDefaultView(Entries);
+
+                    source.Filter = item =>
+                        {
+                            var entryView = item as IEntryView<VPEntry>;
+                            return entryView != null && entryView.Name.
+                                ToLowerInvariant().Contains(this.SearchText.ToLowerInvariant());
+                        };
+
+                    PropertyChanged += (sender, args) =>
+                        {
+                            if (args.PropertyName == "SearchText")
+                            {
+                                source.Refresh();
+                            }
+                        };
+
+                    return source;
+                });
         }
 
         public ObservableCollection<IEntryView<VPEntry>> Entries
         {
             get { return this._entryViews.Value; }
+        }
+
+        public ICollectionView EntriesView
+        {
+            get { return _entryViewSource.Value; }
+        }
+
+        private string _searchText = "";
+        public string SearchText {
+            get { return _searchText; }
+
+            set 
+            { 
+                _searchText = value;
+            
+                OnPropertyChanged();
+            }
         }
 
         public ObservableCollection<VpListEntryViewModel> SelectedEntries

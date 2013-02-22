@@ -95,11 +95,12 @@ namespace VPGUI.UserControls
         }
 
         #endregion
-        
-        private void VpDirectoryControl_OnLoaded(object sender, RoutedEventArgs e)
-        {
-        }
 
         #endregion
+
+        private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
+        {
+            Console.WriteLine(((TextBox) sender).Text);
+        }
     }
 }
