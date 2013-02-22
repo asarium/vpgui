@@ -18,12 +18,7 @@ namespace VPGUI
     {
         private void Application_Startup_1(object sender, StartupEventArgs e)
         {
-            if (Settings.Default.ThemeAccent == null)
-            {
-                Settings.Default.ThemeAccent = ThemeManager.DefaultAccents.First(a => a.Name == "Blue");
-            }
-
-            Settings.Default.PropertyChanged += this.Settings_PropertyChanged;
+            InitializeSettings();
 
             string vpPath = null;
 
@@ -45,6 +40,21 @@ namespace VPGUI
             ((MainWindow) this.MainWindow).ApplicationModel = model;
 
             this.MainWindow.Show();
+        }
+
+        private void InitializeSettings()
+        {
+            if (Settings.Default.ThemeAccent == null)
+            {
+                Settings.Default.ThemeAccent = ThemeManager.DefaultAccents.First(a => a.Name == "Blue");
+            }
+
+            // Clamp the values so the user has the chance to move the window even when some sort of error
+            // or action made the value invalid
+            Settings.Default.Top = Math.Max(0, Math.Min(Settings.Default.Top - 50, SystemParameters.PrimaryScreenHeight));
+            Settings.Default.Left = Math.Max(0, Math.Min(Settings.Default.Left - 50, SystemParameters.PrimaryScreenWidth));
+
+            Settings.Default.PropertyChanged += this.Settings_PropertyChanged;
         }
 
         private void Settings_PropertyChanged(object sender, PropertyChangedEventArgs e)

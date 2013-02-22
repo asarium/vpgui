@@ -71,6 +71,65 @@ namespace VPGUI.Models
             set { this._settings.CreateBackups = value; }
         }
 
+        public double Left
+        {
+            get { return _settings.Left; }
+
+            set { _settings.Left = value; }
+        }
+
+        public double Top
+        {
+            get
+            {
+                return _settings.Top;
+            }
+
+            set
+            {
+                _settings.Top = value;
+            }
+        }
+
+        public double Width
+        {
+            get
+            {
+                return _settings.Width;
+            }
+
+            set
+            {
+                _settings.Width = value;
+            }
+        }
+
+        public double Height
+        {
+            get
+            {
+                return _settings.Height;
+            }
+
+            set
+            {
+                _settings.Height = value;
+            }
+        }
+
+        public bool Maximized
+        {
+            get
+            {
+                return _settings.Maximized;
+            }
+
+            set
+            {
+                _settings.Maximized = value;
+            }
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

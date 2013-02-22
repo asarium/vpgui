@@ -7,6 +7,7 @@
              xmlns:validationRules="clr-namespace:VPGUI.ValidationRules"
              xmlns:dd="clr-namespace:GongSolutions.Wpf.DragDrop;assembly=GongSolutions.Wpf.DragDrop"
              xmlns:listViewLayout="clr-namespace:Itenso.Windows.Controls.ListViewLayout;assembly=Itenso.Windows.Controls.ListViewLayout"
+             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
              mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
              d:DesignHeight="300" d:DesignWidth="300">
     <UserControl.Resources>
@@ -14,9 +15,9 @@
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary 
+                <ResourceDictionary
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
-                <ResourceDictionary 
+                <ResourceDictionary
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -27,22 +28,40 @@
             <RowDefinition Height="*" />
         </Grid.RowDefinitions>
 
-        <ItemsControl Grid.Row="0" Margin="5" ItemsSource="{Binding TreeViewModel.SelectedItem, Converter={StaticResource TreeItemToHierarchy}}">
-            <ItemsControl.ItemsPanel>
-                <ItemsPanelTemplate>
-                    <StackPanel Orientation="Horizontal" />
-                </ItemsPanelTemplate>
-            </ItemsControl.ItemsPanel>
-            <ItemsControl.ItemTemplate>
-                <DataTemplate DataType="models:VpTreeEntryViewModel">
-                    <StackPanel Orientation="Horizontal">
-                        <TextBlock Text="{Binding Name}" FontSize="14" Foreground="{DynamicResource BlackBrush}" />
+        <Grid Grid.Row="0">
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition Width="*" />
+                <ColumnDefinition Width="150" />
+            </Grid.ColumnDefinitions>
+            
+            <ItemsControl Grid.Column="0" Margin="5" Grid.Row="0" VerticalAlignment="Center"
+                          ItemsSource="{Binding TreeViewModel.SelectedItem, Converter={StaticResource TreeItemToHierarchy}}"
+                          ToolTip="The currently shown path" HorizontalAlignment="Stretch">
+                <ItemsControl.ItemsPanel>
+                    <ItemsPanelTemplate>
+                        <StackPanel Orientation="Horizontal" />
+                    </ItemsPanelTemplate>
+                </ItemsControl.ItemsPanel>
+                <ItemsControl.ItemTemplate>
+                    <DataTemplate DataType="models:VpTreeEntryViewModel">
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock Text="{Binding Name}" FontSize="14" Foreground="{DynamicResource BlackBrush}" />
 
-                        <TextBlock Text="/" Margin="4, 0, 4, 0" FontSize="14" Foreground="{DynamicResource BlackBrush}" />
-                    </StackPanel>
-                </DataTemplate>
-            </ItemsControl.ItemTemplate>
-        </ItemsControl>
+                            <TextBlock Text="/" Margin="4, 0, 4, 0" FontSize="14"
+                                       Foreground="{DynamicResource BlackBrush}" />
+                        </StackPanel>
+                    </DataTemplate>
+                </ItemsControl.ItemTemplate>
+            </ItemsControl>
+
+            <TextBox Grid.Column="1" Grid.Row="0"
+                         controls:TextboxHelper.Watermark="Search"
+                         controls:TextboxHelper.ClearTextButton="True"
+                         VerticalAlignment="Center"
+                         HorizontalAlignment="Stretch"
+                         VerticalContentAlignment="Center"
+                         Margin="3"/>
+        </Grid>
 
         <ListView ItemsSource="{Binding DirectoryListModel.Entries}" Margin="0" Grid.Row="1"
                   Height="Auto" Style="{DynamicResource VirtualisedListView}" SelectionMode="Extended"
@@ -52,7 +71,8 @@
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource {x:Type ListViewItem}}">
                     <Style.Resources>
-                        <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
+                        <ResourceDictionary
+                            Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
                     </Style.Resources>
                     <Setter Property="IsSelected" Value="{Binding IsSelected, Mode=TwoWay}" />
                     <Setter Property="FontWeight" Value="Normal" />
@@ -60,7 +80,7 @@
                     <EventSetter Event="MouseDoubleClick" Handler="vpListViewEntry_MouseDoubleClick_1" />
                 </Style>
             </ListView.ItemContainerStyle>
-            
+
             <ListView.ContextMenu>
                 <ContextMenu>
                     <MenuItem Header="Rename" Command="{Binding RenameCommand}" InputGestureText="Del" />
@@ -78,12 +98,12 @@
                                     <Image Width="16" Height="16" Stretch="Uniform"
                                            Source="{Binding EntryIcon}" />
                                     <TextBlock Text="{Binding Name}" Margin="4,2,4,2"
-                                               Visibility="{Binding IsEditing, Converter={StaticResource InverseBooleanToVisiblity}}"/>
+                                               Visibility="{Binding IsEditing, Converter={StaticResource InverseBooleanToVisiblity}}" />
 
                                     <TextBox Text="{Binding Name, Mode=TwoWay}"
                                              Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisiblity}}"
                                              IsVisibleChanged="ListViewEditBox_OnIsVisibleChange"
-                                             LostFocus="ListViewEditBox_OnLostFocus" KeyUp="ListViewEditBox_OnKeyUp"/>
+                                             LostFocus="ListViewEditBox_OnLostFocus" KeyUp="ListViewEditBox_OnKeyUp" />
                                 </VirtualizingStackPanel>
                             </DataTemplate>
                         </GridViewColumn.CellTemplate>

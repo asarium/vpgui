@@ -7,7 +7,10 @@
     mc:Ignorable="d" xmlns:user="clr-namespace:VPGUI.UserControls" xmlns:models="clr-namespace:VPGUI.Models"
     x:Class="VPGUI.MainWindow" TitleCaps="False"
     Title="{Binding Title}" d:DesignWidth="600" d:DesignHeight="400"
-    d:DataContext="{d:DesignInstance models:MainModel}">
+    d:DataContext="{d:DesignInstance models:MainModel}"
+    Left="{Binding Options.Left, Mode=TwoWay}" Top="{Binding Options.Top, Mode=TwoWay}"
+    Width="{Binding Options.Width, Mode=TwoWay}" Height="{Binding Options.Height, Mode=TwoWay}"
+    WindowState="{Binding Options.Maximized, Mode=TwoWay, Converter={StaticResource MaximizedConverter}}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
