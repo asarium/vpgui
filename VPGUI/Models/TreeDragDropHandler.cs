@@ -81,6 +81,12 @@ namespace VPGUI.Models
             base.DragOver(dropInfo);
 
             dropInfo.DropTargetAdorner = dropInfo.TargetItem != null ? DropTargetAdorners.Highlight : DropTargetAdorners.Insert;
+
+            var model = dropInfo.TargetItem as VpTreeEntryViewModel;
+            if (model != null)
+            {
+                model.IsExpanded = true;
+            }
         }
     }
 }
