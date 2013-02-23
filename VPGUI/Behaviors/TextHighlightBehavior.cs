@@ -91,7 +91,7 @@ namespace VPGUI.Behaviors
                     lastEnd = index + highlight.Length;
                 }
 
-                if (lastEnd + 1 < text.Length)
+                if (lastEnd < text.Length)
                 {
                     this.AssociatedObject.Inlines.Add(text.Substring(lastEnd));
                 }
