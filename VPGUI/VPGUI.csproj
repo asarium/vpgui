@@ -105,6 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\TextHighlightBehavior.cs" />
     <Compile Include="Commands\AddEntriesCommand.cs" />
     <Compile Include="Commands\CloseFileCommand.cs" />
     <Compile Include="Commands\DeleteCommand.cs" />
