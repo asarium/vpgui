@@ -129,7 +129,6 @@
                         <MenuItem Header="Select All" Command="{Binding SelectAllCommand}" InputGestureText="Ctrl+A" />
                         <MenuItem Header="Invert Selection" Command="{Binding InvertSelectionCommand}" InputGestureText="Ctrl+Shift+I" />
                     </MenuItem>
-                    <CheckBox Content="Changed" IsChecked="{Binding CurrentVpFile.RootNode.Changed}" />
                 </Menu>
 
                 <Grid Grid.Row="1">
