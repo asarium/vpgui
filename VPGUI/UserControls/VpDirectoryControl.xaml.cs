@@ -54,7 +54,11 @@ namespace VPGUI.UserControls
             if (item != null && item.Content is IEntryView<VPEntry>)
             {
                 var vpEntryView = item.Content as IEntryView<VPEntry>;
-                this.ApplicationModel.OpenEntry(vpEntryView.Entry, vpEntryView);
+
+                if (!vpEntryView.IsEditing)
+                {
+                    this.ApplicationModel.OpenEntry(vpEntryView.Entry, vpEntryView);
+                }
             }
         }
 

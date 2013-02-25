@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using VPGUI.Models;
 using VPSharp.Entries;
 
@@ -17,13 +18,25 @@ namespace VPGUI.Commands
                 return;
             }
 
-            foreach (VpListEntryViewModel selected in this.ApplicationModel.DirectoryListModel.SelectedEntries)
+            if (ApplicationModel.DirectoryListModel.SelectedEntries.Any(item => item.IsEditing))
             {
+                return;
+            }
+
+            var openedDir = false;
+            foreach (var selected in this.ApplicationModel.DirectoryListModel.SelectedEntries)
+            {
+                // Only open one one directory
+                if (selected.Entry is VPDirectoryEntry && openedDir)
+                {
+                    continue;
+                }
+
                 this.ApplicationModel.OpenEntry(selected.Entry, selected);
 
                 if (selected.Entry is VPDirectoryEntry)
                 {
-                    break;
+                    openedDir = true;
                 }
             }
         }
