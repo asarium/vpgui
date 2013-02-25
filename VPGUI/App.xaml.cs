@@ -39,6 +39,8 @@ namespace VPGUI
 
             ((MainWindow) this.MainWindow).ApplicationModel = model;
 
+            MainWindow.WindowState = Settings.Default.Maximized ? WindowState.Maximized : WindowState.Normal;
+
             this.MainWindow.Show();
         }
 
@@ -51,8 +53,8 @@ namespace VPGUI
 
             // Clamp the values so the user has the chance to move the window even when some sort of error
             // or action made the value invalid
-            Settings.Default.Top = Math.Max(0, Math.Min(Settings.Default.Top - 50, SystemParameters.PrimaryScreenHeight));
-            Settings.Default.Left = Math.Max(0, Math.Min(Settings.Default.Left - 50, SystemParameters.PrimaryScreenWidth));
+            Settings.Default.Top = Math.Max(0, Math.Min(Settings.Default.Top, SystemParameters.PrimaryScreenHeight - 50));
+            Settings.Default.Left = Math.Max(0, Math.Min(Settings.Default.Left, SystemParameters.PrimaryScreenWidth - 50));
 
             Settings.Default.PropertyChanged += this.Settings_PropertyChanged;
         }
