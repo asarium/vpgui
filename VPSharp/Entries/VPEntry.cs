@@ -153,12 +153,9 @@ namespace VPSharp.Entries
 
             set
             {
-                if (_name != value)
-                {
-                    _name = value;
+                _name = value;
 
-                    OnPropertyChanged();
-                }
+                OnPropertyChanged();
             }
         }
 

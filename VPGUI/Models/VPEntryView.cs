@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
 using System.Windows.Media;
@@ -9,7 +10,7 @@ using VPSharp.Entries;
 
 namespace VPGUI.Models
 {
-    public interface IEntryView<out TEntryType> :INotifyPropertyChanged where TEntryType : VPEntry
+    public interface IEntryView<out TEntryType> : INotifyPropertyChanged, IEditableObject where TEntryType : VPEntry
     {
         TEntryType Entry { get; }
 
@@ -42,16 +43,52 @@ namespace VPGUI.Models
 
         protected virtual void EntryChanged(object sender, PropertyChangedEventArgs propertyChangedEventArgs)
         {
-            if (propertyChangedEventArgs.PropertyName == "Name")
+            if (propertyChangedEventArgs.PropertyName == "Name" && !IsEditing)
             {
                 OnPropertyChanged("Name");
             }
         }
 
-        public TEntryType Entry { get; private set; }
+        public TEntryType Entry
+        {
+            get;
+            private set;
+        }
+
+        public int CompareTo(object obj)
+        {
+            if (ReferenceEquals(obj, this))
+            {
+                return 0;
+            }
+
+            if (obj == null)
+            {
+                return 1;
+            }
+
+            var entryView = obj as IEntryView<TEntryType>;
+
+            if (entryView == null)
+            {
+                return 1;
+            }
+
+            if (entryView.Entry == null)
+            {
+                return 1;
+            }
+
+            if (this.Entry == null)
+            {
+                return -1;
+            }
+
+            return this.Entry.CompareTo(entryView.Entry);
+        }
 
         /// <summary>
-        ///     Gets/sets whether the TreeViewItem
+        ///     Gets/sets whether the Item
         ///     associated with this object is selected.
         /// </summary>
         public virtual bool IsSelected
@@ -86,11 +123,33 @@ namespace VPGUI.Models
             }
         }
 
+        private string _editName =null;
+
         public string Name
         {
-            get { return this.Entry.Name; }
+            get
+            {
+                if (IsEditing)
+                {
+                    return _editName;
+                }
+                else
+                {
+                    return this.Entry.Name;
+                }
+            }
 
-            set { this.Entry.Name = value; }
+            set
+            {
+                if (IsEditing)
+                {
+                    _editName = value;
+                }
+                else
+                {
+                    this.Entry.Name = value;
+                }
+            }
         }
 
         public virtual ImageSource EntryIcon
@@ -123,6 +182,35 @@ namespace VPGUI.Models
             {
                 this.PropertyChanged(this, new PropertyChangedEventArgs(propertyName));
             }
+        }
+
+        public void BeginEdit()
+        {
+            _editName = Name;
+            IsEditing = true;
+        }
+
+        public void EndEdit()
+        {
+            if (!IsEditing)
+            {
+                return;
+            }
+
+            IsEditing = false;
+
+            Name = _editName;
+        }
+
+        public void CancelEdit()
+        {
+            if (!IsEditing)
+            {
+                return;
+            }
+
+            _editName = null;
+            IsEditing = false;
         }
     }
 }

@@ -62,49 +62,6 @@ namespace VPGUI.UserControls
             }
         }
 
-        #region ListViewEditBox
-
-        private void ListViewEditBox_OnLostFocus(object sender, RoutedEventArgs e)
-        {
-            var box = sender as TextBox;
-
-            if (box != null)
-            {
-                var item = box.DataContext as IEntryView<VPEntry>;
-
-                if (item != null)
-                {
-                    item.IsEditing = false;
-                }
-            }
-        }
-
-        private void ListViewEditBox_OnIsVisibleChange(object sender, DependencyPropertyChangedEventArgs e)
-        {
-            var box = sender as TextBox;
-
-            if (box != null)
-            {
-                box.Focus();
-                box.SelectAll();
-            }
-        }
-
-        private void ListViewEditBox_OnKeyUp(object sender, KeyEventArgs e)
-        {
-            if (e.Key == Key.Escape)
-            {
-                this.VpListView.Focus();
-            }
-        }
-
         #endregion
-
-        #endregion
-
-        private void TextBoxBase_OnTextChanged(object sender, TextChangedEventArgs e)
-        {
-            Console.WriteLine(((TextBox) sender).Text);
-        }
     }
 }
