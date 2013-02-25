@@ -60,7 +60,7 @@ namespace VPGUI.Behaviors
 
                 if (this.HightlightText.Length <= 0)
                 {
-                    this.AssociatedObject.Inlines.Add(this.AssociatedObject.Text);
+                    this.AssociatedObject.Inlines.Add(text);
                     return;
                 }
 
