@@ -10,7 +10,7 @@
     d:DataContext="{d:DesignInstance models:MainModel}"
     Left="{Binding Options.Left, Mode=TwoWay}" Top="{Binding Options.Top, Mode=TwoWay}"
     Width="{Binding Options.Width, Mode=TwoWay}" Height="{Binding Options.Height, Mode=TwoWay}"
-    WindowState="{Binding Options.Maximized, Mode=TwoWay, Converter={StaticResource MaximizedConverter}}">
+    WindowState="{Binding Options.Maximized}">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

@@ -105,6 +105,7 @@
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
     </ApplicationDefinition>
+    <Compile Include="Behaviors\EditTextBoxBehavior.cs" />
     <Compile Include="Behaviors\TextHighlightBehavior.cs" />
     <Compile Include="Commands\AddEntriesCommand.cs" />
     <Compile Include="Commands\CloseFileCommand.cs" />
@@ -121,7 +122,6 @@
     <Compile Include="Converters\InverseBooleanToVisibilityConverter.cs" />
     <Compile Include="Converters\MessageTypeConverter.cs" />
     <Compile Include="Converters\TreeItemToHierarchyConverter.cs" />
-    <Compile Include="Converters\WindowStateConverter.cs" />
     <Compile Include="IconHelper\IconHelper.cs" />
     <Compile Include="Models\AbstractDropHandler.cs" />
     <Compile Include="Models\ListDragDropHandler.cs" />

@@ -9,8 +9,6 @@
 
     <converters:TreeItemToHierarchyConverter x:Key="TreeItemToHierarchy" />
 
-    <converters:WindowStateConverter x:Key="MaximizedConverter" />
-    
     <Style x:Key="LoadingBorderStyle" TargetType="Border">
         <Style.Triggers>
             <Trigger Property="Visibility" Value="Visible">
