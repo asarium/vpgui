@@ -16,7 +16,7 @@ namespace VPGUI.Behaviors
     {
         public static readonly DependencyProperty SearchTextProperty =
             DependencyProperty.Register("HightlightText", typeof (string), typeof(TextHighlightBehavior),
-            new PropertyMetadata(default(string), HightlightText_Changed));
+            new PropertyMetadata(default(string), PropertyChanged));
 
         public string HightlightText
         {
@@ -24,13 +24,29 @@ namespace VPGUI.Behaviors
             set { SetValue(SearchTextProperty, value); }
         }
 
-        private static void HightlightText_Changed(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
+        private static void PropertyChanged(DependencyObject dependencyObject, DependencyPropertyChangedEventArgs e)
         {
             var behavior = dependencyObject as TextHighlightBehavior;
 
             if (behavior != null)
             {
                 behavior.UpdateHightlight();
+            }
+        }
+
+        public static readonly DependencyProperty ContentTextProperty =
+            DependencyProperty.Register("ContentText", typeof(string), typeof(TextHighlightBehavior),
+            new PropertyMetadata(default(string), PropertyChanged));
+
+        public string ContentText
+        {
+            get
+            {
+                return (string) GetValue(ContentTextProperty);
+            }
+            set
+            {
+                SetValue(ContentTextProperty, value);
             }
         }
 
@@ -54,7 +70,7 @@ namespace VPGUI.Behaviors
                 {
                     return;
                 }
-                var text = this.AssociatedObject.Text;
+                var text = ContentText;
 
                 this.AssociatedObject.Inlines.Clear();
 
