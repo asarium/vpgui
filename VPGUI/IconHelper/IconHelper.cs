@@ -53,7 +53,7 @@ namespace Etier.IconHelper
 
         #endregion
 
-        private static Dictionary<CacheKey, Icon> _iconCache = new Dictionary<CacheKey, Icon>();
+        private static readonly Dictionary<CacheKey, Icon> _iconCache = new Dictionary<CacheKey, Icon>();
 
         /// <summary>
         ///     Returns an icon for a given file - indicated by the name parameter.
@@ -64,14 +64,14 @@ namespace Etier.IconHelper
         /// <returns>System.Drawing.Icon</returns>
         public static Icon GetFileIcon(string name, IconSize size, bool linkOverlay)
         {
-            CacheKey key = new CacheKey(name, size, linkOverlay);
+            var key = new CacheKey(name, size, linkOverlay);
             if (_iconCache.ContainsKey(key))
             {
                 return _iconCache[key];
             }
 
-            Shell32.SHFILEINFO shfi = new Shell32.SHFILEINFO();
-            uint flags = Shell32.SHGFI_ICON | Shell32.SHGFI_USEFILEATTRIBUTES;
+            var shfi = new Shell32.SHFILEINFO();
+            var flags = Shell32.SHGFI_ICON | Shell32.SHGFI_USEFILEATTRIBUTES;
 
             if (linkOverlay)
             {
@@ -95,7 +95,7 @@ namespace Etier.IconHelper
                                   flags);
 
             // Copy (clone) the returned icon to a new object, thus allowing us to clean-up properly
-            Icon icon = (Icon) Icon.FromHandle(shfi.hIcon).Clone();
+            var icon = (Icon) Icon.FromHandle(shfi.hIcon).Clone();
 
             _iconCache[key] = icon;
 
@@ -160,36 +160,47 @@ namespace Etier.IconHelper
                 this.linkOverlay = linkOverlay;
             }
 
+            protected bool Equals(CacheKey other)
+            {
+                return this.linkOverlay.Equals(other.linkOverlay) && string.Equals(this.name, other.name) && this.size == other.size;
+            }
+
             public override bool Equals(object obj)
             {
-                if (base.Equals(obj))
-                {
-                    return true;
-                }
-
-                if (obj is CacheKey)
-                {
-                    CacheKey key = obj as CacheKey;
-
-                    return this.name == key.name && this.size == key.size && this.linkOverlay == key.linkOverlay;
-                }
-                else
+                if (ReferenceEquals(null, obj))
                 {
                     return false;
                 }
+                if (ReferenceEquals(this, obj))
+                {
+                    return true;
+                }
+                if (obj.GetType() != this.GetType())
+                {
+                    return false;
+                }
+                return Equals((CacheKey) obj);
             }
 
             public override int GetHashCode()
             {
                 unchecked
                 {
-                    int hash = 17;
-                    // Suitable nullity checks etc, of course :)
-                    hash = hash*29 + this.name.GetHashCode();
-                    hash = hash*29 + this.size.GetHashCode();
-                    hash = hash*29 + this.linkOverlay.GetHashCode();
-                    return hash;
+                    int hashCode = this.linkOverlay.GetHashCode();
+                    hashCode = (hashCode*397) ^ (this.name != null ? this.name.GetHashCode() : 0);
+                    hashCode = (hashCode*397) ^ (int) this.size;
+                    return hashCode;
                 }
+            }
+
+            public static bool operator ==(CacheKey left, CacheKey right)
+            {
+                return Equals(left, right);
+            }
+
+            public static bool operator !=(CacheKey left, CacheKey right)
+            {
+                return !Equals(left, right);
             }
         }
 
