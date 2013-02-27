@@ -11,7 +11,7 @@
     Left="{Binding Options.Left, Mode=TwoWay}" Top="{Binding Options.Top, Mode=TwoWay}"
     Width="{Binding Options.Width, Mode=TwoWay}" Height="{Binding Options.Height, Mode=TwoWay}"
     WindowState="{Binding Options.Maximized, Converter={StaticResource WindowStateConverter}, Mode=OneWayToSource}"
-    >
+    Closing="MainWindow_OnClosing">
     <Window.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>

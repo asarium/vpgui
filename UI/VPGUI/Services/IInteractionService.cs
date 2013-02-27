@@ -7,7 +7,21 @@ namespace VPGUI.Services
     {
         Warning,
         Error,
-        Information
+        Information,
+        Question
+    }
+
+    public enum QuestionType
+    {
+        YesNo,
+        YesNoCancel
+    }
+
+    public enum QuestionAnswer
+    {
+        Yes,
+        No,
+        Cancel
     }
 
     public class FileFilter
@@ -26,6 +40,8 @@ namespace VPGUI.Services
     public delegate void PathsSelectedDelegate(string[] paths);
     public delegate void PathSelectedDelegate(string path);
 
+    public delegate void QuestionDelegate(QuestionAnswer answer);
+
     public interface IInteractionService
     {
         void ShowMessage(MessageType type, string title, string text);
@@ -35,5 +51,7 @@ namespace VPGUI.Services
         void SaveFileDialog(string title, PathSelectedDelegate selectedCallback, params FileFilter[] filters);
 
         void SaveDirectoryDialog(string title, PathSelectedDelegate selectedCallback);
+
+        void ShowQuestion(MessageType type, QuestionType questionType, string title, string text, QuestionDelegate callback);
     }
 }

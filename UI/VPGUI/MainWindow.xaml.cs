@@ -1,4 +1,5 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Text;
 using System.Windows;
 using System.Windows.Controls;
@@ -33,6 +34,8 @@ namespace VPGUI
                 this.DataContext = this.ApplicationModel;
             }
         }
+
+        private bool _closingWindow = false;
 
         #endregion
 
@@ -83,10 +86,44 @@ namespace VPGUI
 
         private void CloseItem_Click(object sender, RoutedEventArgs e)
         {
-            Application.Current.Shutdown();
+            HandleClose();
+
+            _closingWindow = true;
+        }
+
+        private void MainWindow_OnClosing(object sender, CancelEventArgs e)
+        {
+            if (!_closingWindow)
+            {
+                HandleClose(b => e.Cancel = !b);
+            }
         }
 
         #endregion
+
+        public void HandleClose(Action<bool> callback = null)
+        {
+            if (ApplicationModel.CurrentVpFile != null && ApplicationModel.CurrentVpFile.RootNode.Changed)
+            {
+                this.ShowQuestion(MessageType.Question, QuestionType.YesNo, "Unsaved changes", 
+                    "There are unsaved changes in the file. Do you really want to quit?", answer =>
+                        {
+                            if (callback != null)
+                            {
+                                callback(answer == QuestionAnswer.Yes);
+                            }
+
+                            if (answer == QuestionAnswer.Yes)
+                            {
+                                Application.Current.Shutdown();
+                            }
+                        });
+            }
+            else
+            {
+                Application.Current.Shutdown();
+            }
+        }
 
         #region IInteractionService implementation
 
@@ -105,11 +142,78 @@ namespace VPGUI
                 case MessageType.Information:
                     image = MessageBoxImage.Information;
                     break;
+                case MessageType.Question:
+                    image = MessageBoxImage.Question;
+                    break;
                 default:
                     throw new ArgumentOutOfRangeException("type");
             }
 
             MessageBox.Show(this, text, title, MessageBoxButton.OK, image);
+        }
+
+        public void ShowQuestion(MessageType type, QuestionType questionType, string title, string text, QuestionDelegate callback)
+        {
+            var image = MessageBoxImage.None;
+
+            switch (type)
+            {
+                case MessageType.Warning:
+                    image = MessageBoxImage.Warning;
+                    break;
+                case MessageType.Error:
+                    image = MessageBoxImage.Error;
+                    break;
+                case MessageType.Information:
+                    image = MessageBoxImage.Information;
+                    break;
+                case MessageType.Question:
+                    image = MessageBoxImage.Question;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("type");
+            }
+
+            var buttons = MessageBoxButton.YesNo;
+
+            switch (questionType)
+            {
+                case QuestionType.YesNo:
+                    buttons = MessageBoxButton.YesNo;
+                    break;
+                case QuestionType.YesNoCancel:
+                    buttons = MessageBoxButton.YesNoCancel;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException("questionType");
+            }
+
+            var result = MessageBox.Show(this, text, title, buttons, image, MessageBoxResult.No);
+
+            QuestionAnswer answer;
+
+            switch (result)
+            {
+                case MessageBoxResult.None:
+                    answer = QuestionAnswer.Cancel;
+                    break;
+                case MessageBoxResult.OK:
+                    answer = QuestionAnswer.Yes;
+                    break;
+                case MessageBoxResult.Cancel:
+                    answer = QuestionAnswer.Cancel;
+                    break;
+                case MessageBoxResult.Yes:
+                    answer = QuestionAnswer.Yes;
+                    break;
+                case MessageBoxResult.No:
+                    answer = QuestionAnswer.No;
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            callback(answer);
         }
 
         public void OpenFileDialog(string title, bool multiple, PathsSelectedDelegate selectedCallback, params FileFilter[] filters)
