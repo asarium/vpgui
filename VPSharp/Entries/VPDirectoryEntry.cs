@@ -137,29 +137,14 @@ namespace VPSharp.Entries
 
             entry.Parent = this;
 
-            if (ContainingFile.SortEntries)
+            Children.Add(entry);
+
+            var dirItem = entry as VPDirectoryEntry;
+            if (dirItem != null)
             {
-                Children.Insert(Children.GetFittingIndex(entry), entry);
+                SubDirectories.Add(dirItem);
 
-                var item = entry as VPDirectoryEntry;
-                if (item != null)
-                {
-                    SubDirectories.Insert(SubDirectories.GetFittingIndex(item), item);
-
-                    TotalDirectoryCount++;
-                }
-            }
-            else
-            {
-                Children.Add(entry);
-
-                var item = entry as VPDirectoryEntry;
-                if (item != null)
-                {
-                    SubDirectories.Add(item);
-
-                    TotalDirectoryCount++;
-                }
+                TotalDirectoryCount++;
             }
             TotalChildrenCount++;
 

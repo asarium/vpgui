@@ -129,16 +129,12 @@ namespace VPSharp
             this._memoryFile = MemoryMappedFile.CreateFromFile(stream, VPFileInfo.Name, 0,
                                                          MemoryMappedFileAccess.Read, new MemoryMappedFileSecurity(),
                                                          HandleInheritability.None, false);
-
-            SortEntries = true;
         }
 
         /// <summary>
         ///     The root node of the vp-file which contains the tree of all entries in this file.
         /// </summary>
         public VPDirectoryEntry RootNode { get; internal set; }
-
-        public bool SortEntries { get; set; }
 
         internal bool BuildingIndex { get; set; }
 
