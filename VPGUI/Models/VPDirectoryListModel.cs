@@ -6,6 +6,7 @@ using System.ComponentModel;
 using System.Globalization;
 using System.Linq;
 using System.Runtime.CompilerServices;
+using System.Windows;
 using System.Windows.Data;
 using VPGUI.Utilities;
 using VPSharp.Entries;
@@ -31,36 +32,38 @@ namespace VPGUI.Models
 
             _entryViewSource = new Lazy<ListCollectionView>(() =>
                 {
-                    var source = CollectionViewSource.GetDefaultView(Entries);
+                    ListCollectionView listCollection = null;
 
-                    source.Filter = item =>
+                    // The CollectionViewSource has to be created on the UI thread
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        var source = CollectionViewSource.GetDefaultView(Entries);
+
+                        source.Filter = item =>
                         {
                             var entryView = item as IEntryView<VPEntry>;
                             return entryView != null && entryView.Name.
                                 ToLowerInvariant().Contains(this.SearchText.ToLowerInvariant());
                         };
 
-                    var listCollection = source as ListCollectionView;
+                        listCollection = source as ListCollectionView;
 
-                    if (listCollection != null)
-                    {
-                        listCollection.CustomSort = new EntrySorter();
-                        listCollection.IsLiveSorting = true;
-
-                        listCollection.IsLiveFiltering = true;
-                    }
-                    else
-                    {
-                        return null;
-                    }
-
-                    PropertyChanged += (sender, args) =>
+                        if (listCollection != null)
                         {
-                            if (args.PropertyName == "SearchText")
+                            listCollection.CustomSort = new EntrySorter();
+                            listCollection.IsLiveSorting = true;
+
+                            listCollection.IsLiveFiltering = true;
+
+                            PropertyChanged += (sender, args) =>
                             {
-                                listCollection.Refresh();
-                            }
-                        };
+                                if (args.PropertyName == "SearchText")
+                                {
+                                    listCollection.Refresh();
+                                }
+                            };
+                        }
+                    });
 
                     return listCollection;
                 });
