@@ -249,7 +249,6 @@ namespace VPGUI.Models
         private ICommand _closeFileCommand;
         private ICommand _saveCommand;
         private ICommand _saveAsCommand;
-        private ICommand _closeCommand;
 
         // Edit menu
         private ICommand _extractFilesCommand;
@@ -314,19 +313,6 @@ namespace VPGUI.Models
                 }
 
                 return this._openCommand;
-            }
-        }
-
-        public ICommand CloseCommand
-        {
-            get
-            {
-                if (this._closeCommand == null)
-                {
-                    this._closeCommand = new RelayCommand(param => this.Close());
-                }
-
-                return this._closeCommand;
             }
         }
 

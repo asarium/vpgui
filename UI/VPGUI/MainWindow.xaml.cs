@@ -81,6 +81,11 @@ namespace VPGUI
             }
         }
 
+        private void CloseItem_Click(object sender, RoutedEventArgs e)
+        {
+            Application.Current.Shutdown();
+        }
+
         #endregion
 
         #region IInteractionService implementation
