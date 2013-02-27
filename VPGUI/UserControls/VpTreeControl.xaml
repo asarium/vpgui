@@ -34,8 +34,8 @@
             </TreeView.ItemContainerStyle>
 
             <TreeView.ItemTemplate>
-                <HierarchicalDataTemplate ItemsSource="{Binding Children}">
-                    <StackPanel Orientation="Horizontal" Height="22">
+                <HierarchicalDataTemplate ItemsSource="{Binding ChildrenView}">
+                    <StackPanel Orientation="Horizontal" Height="22" d:DataContext="{d:DesignInstance models:VpTreeEntryViewModel}">
                         <ac:AdornedControl HorizontalAdornerPlacement="Inside" VerticalAdornerPlacement="Inside"
                                            IsAdornerVisible="{Binding Entry.Changed}">
                             <ac:AdornedControl.AdornerContent>

@@ -2,6 +2,8 @@
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Runtime.CompilerServices;
+using System.Windows;
+using System.Windows.Data;
 using System.Windows.Media;
 using Etier.IconHelper;
 using VPGUI.IconHelper;
@@ -26,9 +28,9 @@ namespace VPGUI.Models
             }
         }
 
-        public ObservableCollection<VpTreeEntryViewModel> TopLevel
+        public ICollectionView TopLevel
         {
-            get { return this._rootEntry.Children; }
+            get { return this._rootEntry.ChildrenView; }
         }
 
         public VpTreeEntryViewModel SelectedItem
@@ -66,6 +68,8 @@ namespace VPGUI.Models
         private readonly Lazy<ObservableCollection<VpTreeEntryViewModel>> _treeEntryViews;
         private bool _isExpanded;
 
+        private readonly Lazy<ICollectionView> _childrenViews;
+
         public VpTreeEntryViewModel(VpTreeViewModel viewModel, VPDirectoryEntry entry,
                                     VpTreeEntryViewModel modelParent = null)
             : base(entry)
@@ -79,6 +83,27 @@ namespace VPGUI.Models
             this._treeEntryViews = new Lazy<ObservableCollection<VpTreeEntryViewModel>>(
                 () => new ObservableViewModelCollection<VpTreeEntryViewModel, VPDirectoryEntry>
                           (entry.SubDirectories, viewModelCreator));
+
+            _childrenViews = new Lazy<ICollectionView>(() =>
+                {
+                    ListCollectionView listCollection = null;
+
+                    // The CollectionViewSource has to be created on the UI thread
+                    Application.Current.Dispatcher.Invoke(() =>
+                    {
+                        var source = CollectionViewSource.GetDefaultView(Children);
+
+                        listCollection = source as ListCollectionView;
+
+                        if (listCollection != null)
+                        {
+                            listCollection.CustomSort = new EntrySorter();
+                            listCollection.IsLiveSorting = true;
+                        }
+                    });
+
+                    return listCollection;
+                });
         }
 
         public VpTreeViewModel ViewModel { get; internal set; }
@@ -88,6 +113,14 @@ namespace VPGUI.Models
         public ObservableCollection<VpTreeEntryViewModel> Children
         {
             get { return this._treeEntryViews.Value; }
+        }
+
+        public ICollectionView ChildrenView
+        {
+            get
+            {
+                return _childrenViews.Value;
+            }
         }
 
         public override bool IsSelected

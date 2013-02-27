@@ -125,6 +125,7 @@
     <Compile Include="Converters\WindowStateConverter.cs" />
     <Compile Include="IconHelper\IconHelper.cs" />
     <Compile Include="Models\AbstractDropHandler.cs" />
+    <Compile Include="Models\EntrySorter.cs" />
     <Compile Include="Models\ListDragDropHandler.cs" />
     <Compile Include="Models\MainModel.cs" />
     <Compile Include="Models\OptionsModel.cs" />
