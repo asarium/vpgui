@@ -21,35 +21,7 @@ namespace VPGUI.Commands
                     {
                         if (path != null)
                         {
-                            this.ApplicationModel.IsBusy = true;
-                            this.ApplicationModel.BusyMessage = "Saving to " + new FileInfo(path).Name + "...";
-
-                            this.FileInstance.WriteVPAsync(path, this.BackupCallback).ContinueWith((task) =>
-                                {
-                                    if (task.Exception != null)
-                                    {
-                                        this.ApplicationModel.InteractionService.ShowMessage(MessageType.Error,
-                                                                                             "Error while writing file",
-                                                                                             "Error while writing VP file:" +
-                                                                                             Util
-                                                                                                 .GetAggregateExceptionMessage
-                                                                                                 (
-                                                                                                     task.Exception));
-
-                                        this.ApplicationModel.StatusMessage = "Failed to save VP-file.";
-                                    }
-                                    else
-                                    {
-                                        this.ApplicationModel.InteractionService.ShowMessage(MessageType.Information,
-                                                                                             "Writing completed",
-                                                                                             "VP-file was successfully written.");
-
-                                        this.ApplicationModel.StatusMessage = String.Format(
-                                            "VP-file successfully saved to {0}.", task.Result);
-                                    }
-
-                                    this.ApplicationModel.IsBusy = false;
-                                }, TaskScheduler.FromCurrentSynchronizationContext());
+                            ApplicationModel.SaveVpFile(path, BackupCallback);
                         }
                     }, new FileFilter("VP-file", "*.vp"), new FileFilter("All files", "*.*"));
             }

@@ -517,6 +517,43 @@ namespace VPGUI.Models
             }
         }
 
+        public void SaveVpFile(string path = null, VPFile.OverwriteCallback callback = null)
+        {
+            if (this.CurrentVpFile == null)
+            {
+                return;
+            }
+
+            this.IsBusy = true;
+            this.BusyMessage = path == null ? "Saving file..." :
+                "Saving file to " + new FileInfo(path).Name + "...";
+
+            this.CurrentVpFile.WriteVPAsync(null, callback).ContinueWith(task =>
+            {
+                this.IsBusy = false;
+
+                if (task.Exception != null)
+                {
+                    this.InteractionService.ShowMessage(MessageType.Error,
+                                                                            "Error while writing file",
+                                                                            "Error while writing VP file:" +
+                                                                            Util.GetAggregateExceptionMessage(
+                                                                                task.Exception));
+
+                    this.StatusMessage = "Failed to save VP-file.";
+                }
+                else
+                {
+                    this.InteractionService.ShowMessage(MessageType.Information,
+                                                                            "Writing completed",
+                                                                            "VP-file was successfully written.");
+
+                    this.StatusMessage = String.Format("VP-file successfully saved to {0}.",
+                                                                        task.Result);
+                }
+            }, TaskScheduler.FromCurrentSynchronizationContext());
+        }
+
         public event PropertyChangedEventHandler PropertyChanged;
 
         protected void OnPropertyChanged([CallerMemberName] string propertyName = "")
