@@ -80,6 +80,8 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\packages\MahApps.Metro.0.10.1.27-ALPHA\lib\net40\MahApps.Metro.dll</HintPath>
     </Reference>
+    <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
@@ -97,8 +99,6 @@
       <RequiredTargetFramework>4.0</RequiredTargetFramework>
     </Reference>
     <Reference Include="WindowsBase" />
-    <Reference Include="PresentationCore" />
-    <Reference Include="PresentationFramework" />
   </ItemGroup>
   <ItemGroup>
     <ApplicationDefinition Include="App.xaml">
@@ -216,28 +216,6 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AdornedControl\AdornedControl.csproj">
-      <Project>{94b81cb7-f8a6-44bc-bd71-e927f701e0d8}</Project>
-      <Name>AdornedControl</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\EnumTools\EnumTools.csproj">
-      <Project>{2ccebd48-4f1e-4910-a671-6087abccee6f}</Project>
-      <Name>EnumTools</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\ListViewLayout\ListViewLayout.csproj">
-      <Project>{916a9879-3f2d-471f-aafa-28f0c8a7ffa9}</Project>
-      <Name>ListViewLayout</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\Ookii.Dialogs.Wpf\Ookii.Dialogs.Wpf.csproj">
-      <Project>{d01b1d20-8f5b-4834-8e5c-c7ec6dd587d4}</Project>
-      <Name>Ookii.Dialogs.Wpf</Name>
-    </ProjectReference>
-    <ProjectReference Include="..\VPSharp\VPSharp.csproj">
-      <Project>{e970c72d-303f-44d7-b34d-fc72025acb83}</Project>
-      <Name>VPSharp</Name>
-    </ProjectReference>
-  </ItemGroup>
-  <ItemGroup>
     <BootstrapperPackage Include=".NETFramework,Version=v4.5">
       <Visible>False</Visible>
       <ProductName>Microsoft .NET Framework 4.5 %28x86 and x64%29</ProductName>
@@ -256,6 +234,28 @@
   </ItemGroup>
   <ItemGroup>
     <Resource Include="Resources\Entypo-license.txt" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Lib\VPSharp\VPSharp.csproj">
+      <Project>{e970c72d-303f-44d7-b34d-fc72025acb83}</Project>
+      <Name>VPSharp</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\AdornedControl\AdornedControl.csproj">
+      <Project>{94b81cb7-f8a6-44bc-bd71-e927f701e0d8}</Project>
+      <Name>AdornedControl</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\EnumTools\EnumTools.csproj">
+      <Project>{2ccebd48-4f1e-4910-a671-6087abccee6f}</Project>
+      <Name>EnumTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\ListViewLayout\ListViewLayout.csproj">
+      <Project>{916a9879-3f2d-471f-aafa-28f0c8a7ffa9}</Project>
+      <Name>ListViewLayout</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\Ookii.Dialogs.Wpf\Ookii.Dialogs.Wpf.csproj">
+      <Project>{d01b1d20-8f5b-4834-8e5c-c7ec6dd587d4}</Project>
+      <Name>Ookii.Dialogs.Wpf</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
