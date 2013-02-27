@@ -529,39 +529,40 @@ namespace VPGUI.Models
 
         private void MainModel_PropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "CurrentVpFile")
+            switch (e.PropertyName)
             {
-                if (this.CurrentVpFile != null)
-                {
-                    this.Title = DefaultTitle + " - " + this.CurrentVpFile.VPFileInfo.Name;
+                case "CurrentVpFile":
+                    if (this.CurrentVpFile != null)
+                    {
+                        this.Title = DefaultTitle + " - " + this.CurrentVpFile.VPFileInfo.Name;
 
-                    this.TreeViewModel = new VpTreeViewModel(this.CurrentVpFile.RootNode);
+                        this.TreeViewModel = new VpTreeViewModel(this.CurrentVpFile.RootNode);
 
-                    this.FileMessagesModel = new VPMessagesViewModel(this.CurrentVpFile.FileMessages);
-                }
-                else
-                {
-                    this.TreeViewModel = null;
+                        this.FileMessagesModel = new VPMessagesViewModel(this.CurrentVpFile.FileMessages);
+                    }
+                    else
+                    {
+                        this.TreeViewModel = null;
 
-                    this.Title = DefaultTitle;
+                        this.Title = DefaultTitle;
 
-                    this.FileMessagesModel = null;
-                }
-            }
-            else if (e.PropertyName == "TreeViewModel")
-            {
-                if (TreeViewModel != null)
-                {
-                    this.SelectedHistory = new SelectedHistory();
+                        this.FileMessagesModel = null;
+                    }
+                    break;
+                case "TreeViewModel":
+                    if (this.TreeViewModel != null)
+                    {
+                        this.SelectedHistory = new SelectedHistory();
 
-                    this.DirectoryListModel = new VpDirectoryListModel(this.TreeViewModel.SelectedItem);
-                }
-                else
-                {
-                    this.SelectedHistory = null;
+                        this.DirectoryListModel = new VpDirectoryListModel(this.TreeViewModel.SelectedItem);
+                    }
+                    else
+                    {
+                        this.SelectedHistory = null;
 
-                    this.DirectoryListModel = null;
-                }
+                        this.DirectoryListModel = null;
+                    }
+                    break;
             }
         }
 
@@ -724,7 +725,7 @@ namespace VPGUI.Models
             }).ContinueWith(task => IsBusy = false);
         }
 
-        public async Task AddFilePath(string filePath, VPDirectoryEntry parent = null, bool showMessage = true)
+        private async Task AddFilePath(string filePath, VPDirectoryEntry parent = null, bool showMessage = true)
         {
             if (this.CurrentVpFile == null || this.TreeViewModel == null || this.TreeViewModel.SelectedItem == null)
             {
