@@ -22,7 +22,7 @@ namespace VPGUI.Commands
                 selected.ElementAt(1).IsSelected = false;
             }
 
-            ApplicationModel.DirectoryListModel.SelectedEntries.ElementAt(0).IsEditing = true;
+            ApplicationModel.DirectoryListModel.SelectedEntries.ElementAt(0).BeginEdit();
         }
     }
 }

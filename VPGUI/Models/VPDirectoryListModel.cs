@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Globalization;
@@ -12,8 +14,7 @@ namespace VPGUI.Models
 {
     public class VpDirectoryListModel : INotifyPropertyChanged
     {
-        private readonly Lazy<ObservableCollection<IEntryView<VPEntry>>> _entryViews;
-        private readonly Lazy<ICollectionView> _entryViewSource; 
+        private readonly Lazy<ListCollectionView> _entryViewSource; 
 
         private readonly Lazy<ObservableCollection<VpListEntryViewModel>> _selectedEntries;
         private VpTreeEntryViewModel dirEntry;
@@ -22,17 +23,13 @@ namespace VPGUI.Models
         {
             this.dirEntry = entry;
 
-            Func<VPEntry, IEntryView<VPEntry>> viewModelCreator = this.GetEntryItem;
-            this._entryViews =
-                new Lazy<ObservableCollection<IEntryView<VPEntry>>>(() => new ObservableViewModelCollection
-                                                                               <IEntryView<VPEntry>, VPEntry>(
-                                                                               this.dirEntry.Entry.Children,
-                                                                               viewModelCreator));
+            this.Entries = new ObservableViewModelCollection
+                <IEntryView<VPEntry>, VPEntry>(this.dirEntry.Entry.Children, GetEntryItem);
 
             this._selectedEntries = new Lazy<ObservableCollection<VpListEntryViewModel>>
                 (() => new ObservableCollection<VpListEntryViewModel>());
 
-            _entryViewSource = new Lazy<ICollectionView>(() =>
+            _entryViewSource = new Lazy<ListCollectionView>(() =>
                 {
                     var source = CollectionViewSource.GetDefaultView(Entries);
 
@@ -43,24 +40,36 @@ namespace VPGUI.Models
                                 ToLowerInvariant().Contains(this.SearchText.ToLowerInvariant());
                         };
 
+                    var listCollection = source as ListCollectionView;
+
+                    if (listCollection != null)
+                    {
+                        listCollection.CustomSort = new EntrySorter();
+                        listCollection.IsLiveSorting = true;
+
+                        listCollection.IsLiveFiltering = true;
+                    }
+                    else
+                    {
+                        return null;
+                    }
+
                     PropertyChanged += (sender, args) =>
                         {
                             if (args.PropertyName == "SearchText")
                             {
-                                source.Refresh();
+                                listCollection.Refresh();
                             }
                         };
 
-                    return source;
+                    return listCollection;
                 });
         }
 
         public ObservableCollection<IEntryView<VPEntry>> Entries
-        {
-            get { return this._entryViews.Value; }
-        }
+        { get; private set; }
 
-        public ICollectionView EntriesView
+        public ListCollectionView EntriesView
         {
             get { return _entryViewSource.Value; }
         }
@@ -111,6 +120,47 @@ namespace VPGUI.Models
         private VpTreeEntryViewModel GetTreeEntryForDirectory(VPDirectoryEntry searched)
         {
             return this.dirEntry.Children.FirstOrDefault(treeEntry => treeEntry.Entry == searched);
+        }
+    }
+
+    internal class EntrySorter : IComparer
+    {
+        public int Compare(object x, object y)
+        {
+            var entryX = x as IEntryView<VPEntry>;
+            var entryY = y as IEntryView<VPEntry>;
+
+            if (entryX == entryY)
+            {
+                return 0;
+            }
+
+            if (entryX == null)
+            {
+                return -1;
+            }
+
+            if (entryY == null)
+            {
+                return 1;
+            }
+
+            if (entryX.Entry == entryY.Entry)
+            {
+                return 0;
+            }
+
+            if (entryX.Entry == null)
+            {
+                return -1;
+            }
+
+            if (entryX.Entry == null)
+            {
+                return 1;
+            }
+
+            return entryX.Entry.CompareTo(entryY.Entry);
         }
     }
 
@@ -190,6 +240,43 @@ namespace VPGUI.Models
                 var entry = this.Entry as VPDirectoryEntry;
                 return entry != null ? entry.LastModified : ((VPFileEntry) this.Entry).LastModified;
             }
+        }
+
+        public override void BeginEdit()
+        {
+            // Avoid infinite recursion
+            if (IsEditing)
+            {
+                return;
+            }
+
+            base.BeginEdit();
+
+            ParentViewModel.EntriesView.EditItem(this);
+        }
+
+        public override void EndEdit()
+        {
+            if (!IsEditing)
+            {
+                return;
+            }
+
+            base.EndEdit();
+
+            ParentViewModel.EntriesView.CommitEdit();
+        }
+
+        public override void CancelEdit()
+        {
+            if (!IsEditing)
+            {
+                return;
+            }
+
+            base.CancelEdit();
+
+            ParentViewModel.EntriesView.CancelEdit();
         }
     }
 

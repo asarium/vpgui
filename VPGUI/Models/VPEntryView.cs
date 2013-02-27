@@ -21,13 +21,15 @@ namespace VPGUI.Models
 
         bool IsEditing
         {
-            get; set;
+            get;
         }
 
         string Name
         {
             get; set;
         }
+
+        ImageSource EntryIcon { get; }
     }
 
     public class VpEntryView<TEntryType> : IEntryView<TEntryType> where TEntryType : VPEntry
@@ -112,7 +114,7 @@ namespace VPGUI.Models
                 return this._isEditing;
             }
 
-            set
+            private set
             {
                 if (this._isEditing != value)
                 {
@@ -184,13 +186,13 @@ namespace VPGUI.Models
             }
         }
 
-        public void BeginEdit()
+        public virtual void BeginEdit()
         {
             _editName = Name;
             IsEditing = true;
         }
 
-        public void EndEdit()
+        public virtual void EndEdit()
         {
             if (!IsEditing)
             {
@@ -202,7 +204,7 @@ namespace VPGUI.Models
             Name = _editName;
         }
 
-        public void CancelEdit()
+        public virtual void CancelEdit()
         {
             if (!IsEditing)
             {
