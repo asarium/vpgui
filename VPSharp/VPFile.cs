@@ -342,6 +342,9 @@ namespace VPSharp
                 outPath = outPath + ".out";
             }
 
+            // Sort entries prior to writing
+            RootNode.SortEntries();
+
             using (var stream = new FileStream(outPath, FileMode.Create))
             {
                 await stream.WriteStructAsync(ComputeHeaderValues());

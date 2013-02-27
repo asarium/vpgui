@@ -362,5 +362,18 @@ namespace VPSharp.Entries
 
             return false;
         }
+
+        public void SortEntries()
+        {
+            Children = new ObservableCollection<VPEntry>(Children.OrderBy(entry => entry));
+
+            SubDirectories = new ObservableCollection<VPDirectoryEntry>(SubDirectories.OrderBy(entry => entry));
+
+            // Recursively sort all children
+            foreach (var dir in SubDirectories)
+            {
+                dir.SortEntries();
+            }
+        }
     }
 }
