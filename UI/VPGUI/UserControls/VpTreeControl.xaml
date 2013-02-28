@@ -47,10 +47,9 @@
                                                 <TranslateTransform X="7" Y="1" />
                                             </TransformGroup>
                                         </Canvas.RenderTransform>
+                                        <Path Width="26" Height="24" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 11,21L 20.7857,21L 24,12L 27.2143,21L 37,21L 28.8504,26.8386L 32.5,36L 24,31L 16.5,36L 19.325,26.975L 11,21 Z " />
 
-                                        <Ellipse Height="33" Width="33" Stroke="{DynamicResource AccentColorBrush}" StrokeThickness="5" />
-                                        <Ellipse Height="33" Width="33" Stroke="{DynamicResource BlackBrush}" StrokeThickness="2" />
-                                        <Path Canvas.Left="4" Canvas.Top="3" Width="26" Height="24" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 11,21L 20.7857,21L 24,12L 27.2143,21L 37,21L 28.8504,26.8386L 32.5,36L 24,31L 16.5,36L 19.325,26.975L 11,21 Z " />
+                                        <Path Width="26" Height="24" Stretch="Fill" Stroke="{DynamicResource BlackBrush}" Data="F1 M 11,21L 20.7857,21L 24,12L 27.2143,21L 37,21L 28.8504,26.8386L 32.5,36L 24,31L 16.5,36L 19.325,26.975L 11,21 Z " />
                                     </Canvas>
                                 </ac:AdornedControl.AdornerContent>
 
