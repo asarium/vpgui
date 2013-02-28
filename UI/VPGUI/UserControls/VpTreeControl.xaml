@@ -35,29 +35,31 @@
 
             <TreeView.ItemTemplate>
                 <HierarchicalDataTemplate ItemsSource="{Binding ChildrenView}">
-                    <StackPanel Orientation="Horizontal" Height="22" d:DataContext="{d:DesignInstance models:VpTreeEntryViewModel}">
-                        <ac:AdornedControl HorizontalAdornerPlacement="Inside" VerticalAdornerPlacement="Inside"
+                    <AdornerDecorator>
+                        <StackPanel Orientation="Horizontal" Height="22" d:DataContext="{d:DesignInstance models:VpTreeEntryViewModel}">
+                            <ac:AdornedControl HorizontalAdornerPlacement="Inside" VerticalAdornerPlacement="Inside"
                                            IsAdornerVisible="{Binding Entry.Changed}">
-                            <ac:AdornedControl.AdornerContent>
-                                <Canvas Width="48" Height="48" Clip="F1 M 0,0L 48,0L 48,48L 0,48L 0,0" UseLayoutRounding="False">
-                                    <Canvas.RenderTransform>
-                                        <TransformGroup>
-                                            <ScaleTransform ScaleX="0.4" ScaleY="0.4" />
-                                            <TranslateTransform X="7" Y="1" />
-                                        </TransformGroup>
-                                    </Canvas.RenderTransform>
+                                <ac:AdornedControl.AdornerContent>
+                                    <Canvas Width="48" Height="48" Clip="F1 M 0,0L 48,0L 48,48L 0,48L 0,0" UseLayoutRounding="False">
+                                        <Canvas.RenderTransform>
+                                            <TransformGroup>
+                                                <ScaleTransform ScaleX="0.4" ScaleY="0.4" />
+                                                <TranslateTransform X="7" Y="1" />
+                                            </TransformGroup>
+                                        </Canvas.RenderTransform>
 
-                                    <Ellipse Height="33" Width="33" Stroke="{DynamicResource AccentColorBrush}" StrokeThickness="5" />
-                                    <Ellipse Height="33" Width="33" Stroke="{DynamicResource BlackBrush}" StrokeThickness="2" />
-                                    <Path Canvas.Left="4" Canvas.Top="3" Width="26" Height="24" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 11,21L 20.7857,21L 24,12L 27.2143,21L 37,21L 28.8504,26.8386L 32.5,36L 24,31L 16.5,36L 19.325,26.975L 11,21 Z " />
-                                </Canvas>
-                            </ac:AdornedControl.AdornerContent>
-                            
-                            <Image Width="16" Height="16" Margin="3" Stretch="Uniform"
+                                        <Ellipse Height="33" Width="33" Stroke="{DynamicResource AccentColorBrush}" StrokeThickness="5" />
+                                        <Ellipse Height="33" Width="33" Stroke="{DynamicResource BlackBrush}" StrokeThickness="2" />
+                                        <Path Canvas.Left="4" Canvas.Top="3" Width="26" Height="24" Stretch="Fill" Fill="{DynamicResource AccentColorBrush}" Data="F1 M 11,21L 20.7857,21L 24,12L 27.2143,21L 37,21L 28.8504,26.8386L 32.5,36L 24,31L 16.5,36L 19.325,26.975L 11,21 Z " />
+                                    </Canvas>
+                                </ac:AdornedControl.AdornerContent>
+
+                                <Image Width="16" Height="16" Margin="3" Stretch="Uniform"
                                            Source="{Binding EntryIcon, Mode=OneWay}" />
-                        </ac:AdornedControl>
-                        <TextBlock Text="{Binding Name}" Margin="4,2,4,2" />
-                    </StackPanel>
+                            </ac:AdornedControl>
+                            <TextBlock Text="{Binding Name}" Margin="4,2,4,2" />
+                        </StackPanel>
+                    </AdornerDecorator>
                 </HierarchicalDataTemplate>
             </TreeView.ItemTemplate>
         </TreeView>
