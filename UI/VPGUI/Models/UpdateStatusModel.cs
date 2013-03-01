@@ -9,7 +9,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using VPGUI.Annotations;
 using VPSharp;
-using log4net;
 using VPGUI.Utilities;
 
 namespace VPGUI.Models
@@ -90,8 +89,6 @@ namespace VPGUI.Models
 
     public class UpdatingStatus : INotifyPropertyChanged
     {
-        private static readonly ILog Log = LogManager.GetLogger("VPGUI.Models.UpdatingStatus");
-
         private UpdateStatusModel _updateStatus;
 
         private ApplicationDeployment _deployment;
@@ -206,13 +203,10 @@ namespace VPGUI.Models
         {
             if (e.Error != null)
             {
-                Log.Info("Exception while updating", e.Error);
                 _updateStatus.Status = new ErrorStatus("Failed to update:\n" + e.Error.Message);
             }
             else
             {
-                Log.Info("Update complete.");
-
                 var updatedVersion = this._deployment.UpdatedVersion;
                 if (updatedVersion != null)
                 {
