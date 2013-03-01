@@ -106,8 +106,14 @@
                                         </i:Interaction.Behaviors>
                                     </TextBlock>
 
-                                    <TextBox Text="{Binding Name, Mode=TwoWay, UpdateSourceTrigger=PropertyChanged}"
-                                             Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisiblity}}">
+                                    <TextBox Visibility="{Binding IsEditing, Converter={StaticResource BooleanToVisiblity}}">
+                                        <TextBox.Text>
+                                            <Binding Path="Name" Mode="TwoWay" UpdateSourceTrigger="PropertyChanged">
+                                                <Binding.ValidationRules>
+                                                    <validationRules:FileNameValidator MaxLength="31" />
+                                                </Binding.ValidationRules>
+                                            </Binding>
+                                        </TextBox.Text>
                                         <i:Interaction.Behaviors>
                                             <behaviors:EditTextBoxBehavior IsEditing="{Binding IsEditing}" />
                                         </i:Interaction.Behaviors>

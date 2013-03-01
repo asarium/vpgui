@@ -19,6 +19,22 @@ namespace VPGUI.ValidationRules
 
                 char[] invalid = Path.GetInvalidFileNameChars();
 
+                try
+                {
+                    var invalidChar = invalid.First(str.Contains);
+
+                    return new ValidationResult(false, "The character '" + invalidChar + "' may not appear in a name.");
+                }
+                catch (InvalidOperationException)
+                {
+                    // string is valid
+                }
+
+                if (str.Length > MaxLength)
+                {
+                    return new ValidationResult(false, "The name is too long. Must be shorter than " + (MaxLength + 1) + "characters.");
+                }
+
                 return ValidationResult.ValidResult;
             }
             else
@@ -26,5 +42,8 @@ namespace VPGUI.ValidationRules
                 return new ValidationResult(false, "Not a string!");
             }
         }
+
+        public int MaxLength
+        { get; set; }
     }
 }
