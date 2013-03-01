@@ -420,6 +420,15 @@ namespace VPGUI.Models
             }
         }
 
+        private readonly UpdateStatusModel _updateStatus = new UpdateStatusModel();
+        public object UpdateStatus
+        {
+            get
+            {
+                return _updateStatus;
+            }
+        }
+
         #endregion
 
         private void Close()

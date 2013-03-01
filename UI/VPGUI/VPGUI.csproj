@@ -60,7 +60,7 @@
     <ManifestKeyFile>VPGUI_TemporaryKey.pfx</ManifestKeyFile>
   </PropertyGroup>
   <PropertyGroup>
-    <GenerateManifests>false</GenerateManifests>
+    <GenerateManifests>true</GenerateManifests>
   </PropertyGroup>
   <PropertyGroup>
     <SignManifests>false</SignManifests>
@@ -84,6 +84,7 @@
     <Reference Include="PresentationFramework.Aero" />
     <Reference Include="System" />
     <Reference Include="System.Data" />
+    <Reference Include="System.Deployment" />
     <Reference Include="System.Drawing" />
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
@@ -131,12 +132,17 @@
     <Compile Include="Models\OptionsModel.cs" />
     <Compile Include="Models\SelectedHistory.cs" />
     <Compile Include="Models\TreeDragDropHandler.cs" />
+    <Compile Include="Models\UpdateStatusModel.cs" />
     <Compile Include="Models\VPMessagesViewModel.cs" />
     <Compile Include="Models\VPFileMessageView.cs" />
+    <Compile Include="Properties\Annotations.cs" />
     <Compile Include="Services\IInteractionService.cs" />
     <Compile Include="Settings.cs" />
     <Compile Include="UserControls\OptionsControl.xaml.cs">
       <DependentUpon>OptionsControl.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="UserControls\UpdateStatusControl.xaml.cs">
+      <DependentUpon>UpdateStatusControl.xaml</DependentUpon>
     </Compile>
     <Compile Include="UserControls\VpDirectoryControl.xaml.cs">
       <DependentUpon>VpDirectoryControl.xaml</DependentUpon>
@@ -173,6 +179,10 @@
       <SubType>Designer</SubType>
     </Page>
     <Page Include="UserControls\OptionsControl.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="UserControls\UpdateStatusControl.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>

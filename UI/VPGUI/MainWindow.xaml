@@ -49,6 +49,8 @@
             <Button Content="Open File" Command="{Binding OpenCommand}" />
 
             <Button Content="Options" Command="{Binding OptionsCommand}" />
+            
+            <user:UpdateStatusControl DataContext="{Binding UpdateStatus}" />
         </controls:WindowCommands>
     </controls:MetroWindow.WindowCommands>
 
