@@ -26,6 +26,20 @@ namespace VPGUI
             {
                 vpPath = e.Args[e.Args.Length - 1];
             }
+            else
+            {
+                var info = AppDomain.CurrentDomain.SetupInformation;
+                var args = info.ActivationArguments;
+
+                if (args != null)
+                {
+                    var activationData = args.ActivationData;
+                    if (activationData != null && activationData.Length > 0)
+                    {
+                        vpPath = activationData[activationData.Length - 1];
+                    }
+                }
+            }
 
             this.MainWindow = new MainWindow();
 
