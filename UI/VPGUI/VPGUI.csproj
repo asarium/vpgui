@@ -72,12 +72,9 @@
     <ApplicationManifest>Properties\app.manifest</ApplicationManifest>
   </PropertyGroup>
   <ItemGroup>
-    <Reference Include="GongSolutions.Wpf.DragDrop">
-      <HintPath>..\..\packages\gong-wpf-dragdrop.0.1.3.4\lib\net40\GongSolutions.Wpf.DragDrop.dll</HintPath>
-    </Reference>
     <Reference Include="MahApps.Metro, Version=0.10.0.0, Culture=neutral, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MahApps.Metro.0.10.1.28-ALPHA\lib\net40\MahApps.Metro.dll</HintPath>
+      <HintPath>..\..\packages\MahApps.Metro.0.10.1.29-ALPHA\lib\net40\MahApps.Metro.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
@@ -89,7 +86,7 @@
     <Reference Include="System.Windows.Forms" />
     <Reference Include="System.Windows.Interactivity, Version=4.0.0.0, Culture=neutral, PublicKeyToken=31bf3856ad364e35, processorArchitecture=MSIL">
       <SpecificVersion>False</SpecificVersion>
-      <HintPath>..\..\packages\MahApps.Metro.0.10.1.28-ALPHA\lib\net40\System.Windows.Interactivity.dll</HintPath>
+      <HintPath>..\..\packages\MahApps.Metro.0.10.1.29-ALPHA\lib\net40\System.Windows.Interactivity.dll</HintPath>
     </Reference>
     <Reference Include="System.Xml" />
     <Reference Include="Microsoft.CSharp" />
@@ -254,6 +251,10 @@
     <ProjectReference Include="..\Lib\EnumTools\EnumTools.csproj">
       <Project>{2ccebd48-4f1e-4910-a671-6087abccee6f}</Project>
       <Name>EnumTools</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Lib\gong-wpf-dragdrop\GongSolutions.Wpf.DragDrop\GongSolutions.Wpf.DragDrop.csproj">
+      <Project>{0c6674cc-6d49-414a-9b41-d4e175028ffb}</Project>
+      <Name>GongSolutions.Wpf.DragDrop</Name>
     </ProjectReference>
     <ProjectReference Include="..\Lib\ListViewLayout\ListViewLayout.csproj">
       <Project>{916a9879-3f2d-471f-aafa-28f0c8a7ffa9}</Project>
