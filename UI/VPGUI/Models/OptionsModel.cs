@@ -130,6 +130,19 @@ namespace VPGUI.Models
             }
         }
 
+        public bool CheckForUpdates
+        {
+            get
+            {
+                return _settings.CheckForUpdates;
+            }
+
+            set
+            {
+                _settings.CheckForUpdates = value;
+            }
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

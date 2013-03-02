@@ -99,6 +99,14 @@
                         </ComboBox>
                     </Grid>
                 </GroupBox>
+
+                <GroupBox Header="Updates" MinWidth="200" Width="200">
+                    <Grid>
+                        <controls:ToggleSwitch IsChecked="{Binding CheckForUpdates}"
+                                               HorizontalAlignment="Stretch" OnLabel="Check" OffLabel="Don't check" Header="Update check" 
+                                               Foreground="{DynamicResource BlackBrush}" />
+                    </Grid>
+                </GroupBox>
             </WrapPanel>
             
             <Button Content="Go back" Grid.Row="1" Margin="7" HorizontalAlignment="Right" 

@@ -8,6 +8,7 @@ using System.Text;
 using System.Threading;
 using System.Threading.Tasks;
 using VPGUI.Annotations;
+using VPGUI.Properties;
 using VPSharp;
 using VPGUI.Utilities;
 
@@ -17,18 +18,25 @@ namespace VPGUI.Models
     {
         public UpdateStatusModel()
         {
-            if (ApplicationDeployment.IsNetworkDeployed)
+            if (Settings.Default.CheckForUpdates)
             {
-                var deployment = ApplicationDeployment.CurrentDeployment;
+                if (ApplicationDeployment.IsNetworkDeployed)
+                {
+                    var deployment = ApplicationDeployment.CurrentDeployment;
 
-                deployment.CheckForUpdateCompleted += DeploymentOnCheckForUpdateCompleted;
+                    deployment.CheckForUpdateCompleted += DeploymentOnCheckForUpdateCompleted;
 
-                Status = new UpdateCheckStatus();
-                deployment.CheckForUpdateAsync();
+                    Status = new UpdateCheckStatus();
+                    deployment.CheckForUpdateAsync();
+                }
+                else
+                {
+                    Status = new ErrorStatus("This application was not deployed correctly.");
+                }
             }
             else
             {
-                Status = new ErrorStatus("This application was not deployed correctly.");
+                Status = new SuccessfullStatus("Not checking for updates.");
             }
         }
 
