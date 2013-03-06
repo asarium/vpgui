@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
@@ -63,6 +64,11 @@ namespace VPGUI
             if (Settings.Default.ThemeAccent == null)
             {
                 Settings.Default.ThemeAccent = ThemeManager.DefaultAccents.First(a => a.Name == "Blue");
+            }
+
+            if (Settings.Default.TempPath.Length <= 0 || !Directory.Exists(Settings.Default.TempPath))
+            {
+                Settings.Default.TempPath = Path.GetTempPath();
             }
 
             // Clamp the values so the user has the chance to move the window even when some sort of error

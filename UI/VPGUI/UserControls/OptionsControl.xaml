@@ -65,7 +65,7 @@
                     </Grid>
                 </GroupBox>
             
-                <GroupBox Header="VP handling">
+                <GroupBox Header="File handling">
                     <Grid Width="300">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -73,6 +73,7 @@
                         </Grid.ColumnDefinitions>
 
                         <Grid.RowDefinitions>
+                            <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
@@ -83,12 +84,15 @@
 
                         <Label Content="Extraction Location:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" />
                         <ComboBox Grid.Column="1" Grid.Row="1" Margin="5" SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
-                              SelectedValuePath="Value" ToolTip="Specifies the location where files are extracted before they are opened">
+                              SelectedValuePath="Value" ToolTip="Specifies the location where files are extracted before they are opened"
+                                  HorizontalAlignment="Right">
                             <ComboBox.ItemsSource>
                                 <e:EnumItemList EnumType="{x:Type settings:ExtractLocation}">
                                     <e:EnumItem Value="WorkingDir" Text="In the application directory" />
                                     <e:EnumItem Value="VpLocation" Text="In the VP directory"
                                                 DisplayValue="The file will be placed at the path it had in the VP-file" />
+                                    <e:EnumItem Value="TempPath" Text="In the temporary path"
+                                                DisplayValue="This path can be changed below"/>
                                 </e:EnumItemList>
                             </ComboBox.ItemsSource>
                             <ComboBox.ItemTemplate>
@@ -97,6 +101,10 @@
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
+
+                        <Label Content="Temporary path:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" />
+                        <TextBox Text="{Binding TempPath, Mode=TwoWay}" Grid.Column="1" Grid.Row="2" PreviewMouseLeftButtonUp="TempPath_OnPreviewMouseLeftButtonUp"
+                                 Focusable="False" HorizontalAlignment="Right" />
                     </Grid>
                 </GroupBox>
 

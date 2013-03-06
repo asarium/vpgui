@@ -141,5 +141,17 @@ namespace VPGUI.Properties {
                 this["CheckForUpdates"] = value;
             }
         }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("")]
+        public string TempPath {
+            get {
+                return ((string)(this["TempPath"]));
+            }
+            set {
+                this["TempPath"] = value;
+            }
+        }
     }
 }

@@ -143,6 +143,19 @@ namespace VPGUI.Models
             }
         }
 
+        public string TempPath
+        {
+            get
+            {
+                return _settings.TempPath;
+            }
+
+            set
+            {
+                _settings.TempPath = value;
+            }
+        }
+
         #region INotifyPropertyChanged Members
 
         public event PropertyChangedEventHandler PropertyChanged;

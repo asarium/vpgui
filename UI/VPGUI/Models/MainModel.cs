@@ -624,7 +624,7 @@ namespace VPGUI.Models
             switch (Settings.Default.ExtractLocation)
             {
                 case ExtractLocation.WorkingDir:
-                    return Directory.GetCurrentDirectory() + "\\" + file.VPFileInfo.Name;
+                    return Path.Combine(Directory.GetCurrentDirectory(), file.VPFileInfo.Name);
                 case ExtractLocation.VpLocation:
                     if (file.VPFileInfo.Directory != null)
                     {
@@ -632,8 +632,10 @@ namespace VPGUI.Models
                     }
                     else
                     {
-                        return Directory.GetCurrentDirectory() + "\\" + file.VPFileInfo.Name;
+                        return Path.Combine(Directory.GetCurrentDirectory(), file.VPFileInfo.Name);
                     }
+                case ExtractLocation.TempPath:
+                    return Path.Combine(Settings.Default.TempPath, file.VPFileInfo.Name);
                 default:
                     throw new ArgumentOutOfRangeException();
             }
