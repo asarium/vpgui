@@ -107,7 +107,14 @@ namespace VPGUI.Models
             }
         }
 
-        private IEntryView<VPEntry> GetEntryItem(VPEntry item)
+        public IEntryView<VPEntry> FindEntryView(VPEntry item)
+        {
+            var result = Entries.FirstOrDefault(view => view.Entry == item);
+
+            return result;
+        }
+
+        public IEntryView<VPEntry> GetEntryItem(VPEntry item)
         {
             if (item is VPFileEntry)
             {

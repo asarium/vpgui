@@ -86,6 +86,12 @@
                 <ContextMenu>
                     <MenuItem Header="Rename" Command="{Binding RenameCommand}" InputGestureText="F2" />
                     <MenuItem Header="Delete" Command="{Binding DeleteSelectedCommand}" InputGestureText="Del" />
+
+                    <Separator />
+                    
+                    <MenuItem Header="New">
+                        <MenuItem Header="Directory" Command="{Binding NewDirectoryCommand}"></MenuItem>
+                    </MenuItem>
                 </ContextMenu>
             </ListView.ContextMenu>
 

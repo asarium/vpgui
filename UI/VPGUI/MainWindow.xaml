@@ -120,8 +120,14 @@
                     <MenuItem Header="_Edit">
                         <MenuItem Header="Add Entries" Command="{Binding AddEntriesCommand}" InputGestureText="Ctrl+Shift+A" />
                         <MenuItem Header="Extract" Command="{Binding ExtractFilesCommand}" InputGestureText="Ctrl+E" />
-                        
+
                         <MenuItem Header="Rename" Command="{Binding RenameCommand}" InputGestureText="F2" />
+                        
+                        <Separator />
+
+                        <MenuItem Header="New">
+                            <MenuItem Header="Directory" Command="{Binding NewDirectoryCommand}"></MenuItem>
+                        </MenuItem>
                         
                         <Separator />
                         

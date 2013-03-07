@@ -70,7 +70,7 @@ namespace VPGUI.Behaviors
                 {
                     return;
                 }
-                var text = ContentText;
+                var text = this.ContentText ?? "";
 
                 this.AssociatedObject.Inlines.Clear();
 

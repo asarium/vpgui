@@ -253,6 +253,7 @@ namespace VPGUI.Models
         // Edit menu
         private ICommand _extractFilesCommand;
         private ICommand _addEntriesCommand;
+        private ICommand _newDirectoryCommand;
         private ICommand _deleteSelectedCommand;
         private ICommand _renameCommand;
 
@@ -417,6 +418,19 @@ namespace VPGUI.Models
                 }
 
                 return _closeFileCommand;
+            }
+        }
+
+        public ICommand NewDirectoryCommand
+        {
+            get
+            {
+                if (_newDirectoryCommand == null)
+                {
+                    _newDirectoryCommand = new NewDirectoryCommand(this);
+                }
+
+                return _newDirectoryCommand;
             }
         }
 
@@ -811,7 +825,7 @@ namespace VPGUI.Models
             }
         }
 
-        public void CreateDirectory(VPDirectoryEntry parent = null, string name = null)
+        public IEntryView<VPEntry> CreateDirectory(VPDirectoryEntry parent = null, string name = null)
         {
             if (parent == null)
             {
@@ -824,8 +838,29 @@ namespace VPGUI.Models
             {
                 newEntry.Name = name;
             }
+            else
+            {
+                int i = 0;
+                string newName = null;
+
+                do
+                {
+                    if (i == 0)
+                    {
+                        newName = "New directory";
+                    }
+                    else
+                    {
+                        newName = "New directory (" + i + ")";
+                    }
+                } while (parent.Children.Any(child => child.Name == newName));
+
+                newEntry.Name = newName;
+            }
 
             parent.AddChild(newEntry);
+
+            return DirectoryListModel.FindEntryView(newEntry);
         }
     }
 }

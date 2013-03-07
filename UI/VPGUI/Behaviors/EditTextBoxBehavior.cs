@@ -33,7 +33,7 @@ namespace VPGUI.Behaviors
         {
             var behavior = dependencyObject as EditTextBoxBehavior;
 
-            if (behavior != null && !Equals(e.NewValue, e.OldValue))
+            if (behavior != null && behavior.AssociatedObject != null && !Equals(e.NewValue, e.OldValue))
             {
                 var editable = (IEditableObject) behavior.AssociatedObject.DataContext;
 
