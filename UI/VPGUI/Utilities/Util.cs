@@ -13,18 +13,18 @@ namespace VPGUI.Utilities
 
     public static class Util
     {
-        public static string GetAggregateExceptionMessage(AggregateException except)
-        {
-            StringBuilder builder = new StringBuilder();
-
-            foreach (Exception e in except.InnerExceptions)
+            public static string GetAggregateExceptionMessage(AggregateException except)
             {
-                builder.Append("\n");
-                builder.Append(e.Message);
-            }
+                StringBuilder builder = new StringBuilder();
 
-            return builder.ToString();
-        }
+                foreach (Exception e in except.InnerExceptions)
+                {
+                    builder.Append("\n");
+                    builder.Append(e.Message);
+                }
+
+                return builder.ToString();
+            }
 
         public static string GetExtensionString(string name)
         {
