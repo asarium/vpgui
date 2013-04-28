@@ -83,9 +83,9 @@
                                                Foreground="{DynamicResource BlackBrush}" />
 
                         <Label Content="Extraction Location:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="5" SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
+                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="0, 3" SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
                               SelectedValuePath="Value" ToolTip="Specifies the location where files are extracted before they are opened"
-                                  HorizontalAlignment="Right">
+                                  HorizontalAlignment="Stretch">
                             <ComboBox.ItemsSource>
                                 <e:EnumItemList EnumType="{x:Type settings:ExtractLocation}">
                                     <e:EnumItem Value="WorkingDir" Text="In the application directory" />
@@ -103,8 +103,9 @@
                         </ComboBox>
 
                         <Label Content="Temporary path:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" />
-                        <TextBox Text="{Binding TempPath, Mode=TwoWay}" Grid.Column="1" Grid.Row="2" PreviewMouseLeftButtonUp="TempPath_OnPreviewMouseLeftButtonUp"
-                                 Focusable="False" HorizontalAlignment="Right" />
+                        <TextBox Text="{Binding TempPath, Mode=TwoWay}" Margin="0, 3" Grid.Column="1" Grid.Row="2" 
+                                 PreviewMouseLeftButtonUp="TempPath_OnPreviewMouseLeftButtonUp"
+                                 Focusable="False" HorizontalAlignment="Stretch" />
                     </Grid>
                 </GroupBox>
 

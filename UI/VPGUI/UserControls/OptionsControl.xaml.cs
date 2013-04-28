@@ -3,6 +3,7 @@ using System.Windows;
 using System.Windows.Controls;
 using System.Windows.Input;
 using Ookii.Dialogs.Wpf;
+using VPGUI.Models;
 using VPGUI.Properties;
 
 namespace VPGUI.UserControls
@@ -30,7 +31,7 @@ namespace VPGUI.UserControls
 
             if (b.HasValue && b.Value)
             {
-                box.Text = dlg.SelectedPath;
+                Settings.Default.TempPath = dlg.SelectedPath;
             }
         }
     }
