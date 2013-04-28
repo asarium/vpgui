@@ -6,6 +6,7 @@ using System.Linq;
 using System.Windows;
 using System.Windows.Threading;
 using MahApps.Metro;
+using Ookii.Dialogs.Wpf;
 using VPGUI.Models;
 using VPGUI.Properties;
 using VPGUI.Services;
@@ -96,8 +97,28 @@ namespace VPGUI
 
         private void App_OnDispatcherUnhandledException(object sender, DispatcherUnhandledExceptionEventArgs e)
         {
-            MessageBox.Show("Unhandled Exception:\n" + e.Exception.ToString(),
-                            "Unhandled Exception!");
+            var dlg = new TaskDialog();
+            dlg.ButtonStyle = TaskDialogButtonStyle.Standard;
+            dlg.Content = "An unexpected error has occured. The application can not continue to execute in this state!\n" +
+                          "See below for more information. Please report this error along with the generated informations. " +
+                          "All relevant informations are automatically copied to your clipboard.";
+            dlg.ExpandedInformation = e.Exception.ToString();
+            dlg.MainInstruction = "Unhandled Exception!";
+            dlg.MainIcon = TaskDialogIcon.Error;
+            dlg.WindowTitle = "Unhandled Exception!";
+            dlg.ExpandedControlText = "Show more informations";
+
+            dlg.VerificationText = "Save error to clipboard";
+            dlg.IsVerificationChecked = true;
+
+            dlg.Buttons.Add(new TaskDialogButton(ButtonType.Close));
+
+            dlg.ShowDialog(this.MainWindow);
+
+            if (dlg.IsVerificationChecked)
+            {
+                Clipboard.SetText(e.Exception.ToString(), TextDataFormat.UnicodeText);
+            }
 
             Process.GetCurrentProcess().Kill();
         }
