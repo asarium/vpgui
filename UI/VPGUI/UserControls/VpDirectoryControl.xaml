@@ -67,7 +67,7 @@
         <ListView ItemsSource="{Binding DirectoryListModel.EntriesView, IsAsync=True}" Margin="0" Grid.Row="1"
                   Height="Auto" SelectionMode="Extended" Style="{StaticResource VirtualisedMetroListView}"
                   dd:DragDrop.IsDragSource="True" dd:DragDrop.IsDropTarget="True"
-                  dd:DragDrop.DropHandler="{Binding ListDNDHandler}"
+                  dd:DragDrop.DropHandler="{Binding ListDNDHandler}" dd:DragDrop.DragHandler="{Binding ListDNDHandler}"
                   listViewLayout:ListViewLayoutManager.Enabled="True">
             <ListView.ItemContainerStyle>
                 <Style TargetType="{x:Type ListViewItem}" BasedOn="{StaticResource MetroListViewItem}">
