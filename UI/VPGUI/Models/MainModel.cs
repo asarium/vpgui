@@ -862,5 +862,51 @@ namespace VPGUI.Models
 
             return DirectoryListModel.FindEntryView(newEntry);
         }
+
+        public async Task<IEnumerable<string>> ExtractEntriesAsync(string path = null, IEnumerable<VPEntry> entries = null)
+        {
+            if (entries == null)
+            {
+                entries = DirectoryListModel.SelectedEntries.Select(view => view.Entry);
+            }
+
+            var entriesArray = entries as VPEntry[] ?? entries.ToArray();
+
+            if (entriesArray.Length <= 0)
+            {
+                return new string[0];
+            }
+
+            IsBusy = true;
+            var paths = new List<string>(entriesArray.Count());
+            BusyMessage = "Extracting files...";
+
+            int extractCount = 0;
+            try
+            {
+                foreach (var entry in entriesArray)
+                {
+                    this.BusyMessage = "Extracting " + entry.Name + "...";
+
+                    try
+                    {
+                        paths.Add(await ExtractEntryAsync(entry));
+                        extractCount++;
+                    }
+                    catch (Exception e)
+                    {
+                        InteractionService.ShowMessage(MessageType.Error, "Error while extracting", "Error while extracting '" + entry.Name + "':\n" + e.Message);
+                    }
+                }
+            }
+            finally
+            {
+                IsBusy = false;
+            }
+
+            StatusMessage = "Extracted " + extractCount + " entries...";
+
+            return paths;
+        }
     }
 }

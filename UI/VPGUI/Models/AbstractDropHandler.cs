@@ -6,11 +6,13 @@ using System.Text;
 using System.Threading.Tasks;
 using System.Windows;
 using GongSolutions.Wpf.DragDrop;
+using GongSolutions.Wpf.DragDrop.Utilities;
+using VPGUI.Utilities;
 using VPSharp.Entries;
 
 namespace VPGUI.Models
 {
-    public abstract class AbstractDropHandler : IDropTarget
+    public abstract class AbstractDropHandler : IDropTarget, IDragSource
     {
         protected readonly MainModel ApplicationModel;
 
@@ -124,6 +126,34 @@ namespace VPGUI.Models
             }
 
             return entries;
+        }
+
+        public void Dropped(IDropInfo dropInfo)
+        {
+        }
+
+        public void StartDrag(IDragInfo dragInfo)
+        {
+            var itemCount = dragInfo.SourceItems.Cast<object>().Count();
+
+            if (itemCount == 1)
+            {
+                dragInfo.Data = dragInfo.SourceItems.Cast<object>().First();
+            }
+            else if (itemCount > 1)
+            {
+                dragInfo.Data = TypeUtilities.CreateDynamicallyTypedList(dragInfo.SourceItems);
+            }
+
+            dragInfo.Effects = (dragInfo.Data != null) ?
+                                   DragDropEffects.Copy | DragDropEffects.Move :
+                                   DragDropEffects.None;
+
+            if (itemCount > 0)
+            {
+                dragInfo.DataObject = new VPDataObject(dragInfo.SourceItems.
+                    Cast<IEntryView<VPEntry>>().Select(view => view.Entry), ApplicationModel);
+            }
         }
     }
 }

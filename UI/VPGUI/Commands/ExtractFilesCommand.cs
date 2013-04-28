@@ -63,31 +63,7 @@ namespace VPGUI.Commands
 
         public override void Execute(object parameter)
         {
-            this.ApplicationModel.InteractionService.SaveDirectoryDialog(null, path => Task.Run(async () =>
-                {
-                    this.ApplicationModel.IsBusy = true;
-                    this.ApplicationModel.BusyMessage = "Extracting files...";
-
-                    foreach (var entry in this.CurrentListModel.SelectedEntries)
-                    {
-                        this.ApplicationModel.BusyMessage = "Extracting " + entry.Name + "...";
-                        await this.ApplicationModel.ExtractEntryAsync(entry.Entry, path,
-                                                                      this.ApplicationModel.TreeViewModel.SelectedItem
-                                                                          .Entry);
-                    }
-                }).ContinueWith(task =>
-                    {
-                        if (task.Exception != null)
-                        {
-                            this.ApplicationModel.InteractionService.ShowMessage(MessageType.Error,
-                                                                                 "Error while extracting entries",
-                                                                                 "Error while extracting entries:" +
-                                                                                 Util.GetAggregateExceptionMessage(
-                                                                                     task.Exception));
-                        }
-
-                        this.ApplicationModel.IsBusy = false;
-                    }, TaskScheduler.FromCurrentSynchronizationContext()));
+            this.ApplicationModel.InteractionService.SaveDirectoryDialog(null, path => ApplicationModel.ExtractEntriesAsync(path));
         }
     }
 }
