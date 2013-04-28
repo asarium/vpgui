@@ -42,24 +42,31 @@ namespace VPGUI.Models
 
         private void DeploymentOnCheckForUpdateCompleted(object sender, CheckForUpdateCompletedEventArgs e)
         {
-            if (e.UpdateAvailable)
+            try
             {
-                var deployment = ApplicationDeployment.CurrentDeployment;
-
-                Status = new UpdatingStatus(this, deployment);
-
-                deployment.UpdateAsync();
-            }
-            else
-            {
-                if (e.Error != null)
+                if (e.Error != null && e.UpdateAvailable)
                 {
-                    Status = new ErrorStatus("Failed to check for update:\n" + e.Error.Message);
+                    var deployment = ApplicationDeployment.CurrentDeployment;
+
+                    Status = new UpdatingStatus(this, deployment);
+
+                    deployment.UpdateAsync();
                 }
                 else
                 {
-                    Status = new SuccessfullStatus("You are using the latest version.");
+                    if (e.Error != null)
+                    {
+                        Status = new ErrorStatus("Failed to check for update:\n" + e.Error.Message);
+                    }
+                    else
+                    {
+                        Status = new SuccessfullStatus("You are using the latest version.");
+                    }
                 }
+            }
+            catch (Exception exception)
+            {
+                Status = new ErrorStatus("Failed to check for update:\n" + exception.Message);
             }
         }
 
