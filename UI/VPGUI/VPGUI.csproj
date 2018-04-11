@@ -26,9 +26,9 @@
     <UpdatePeriodically>false</UpdatePeriodically>
     <UpdateRequired>false</UpdateRequired>
     <MapFileExtensions>true</MapFileExtensions>
-    <InstallUrl>http://asarium.github.io/vpgui/update/</InstallUrl>
+    <InstallUrl>https://asarium.github.io/vpgui/update/</InstallUrl>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>6</ApplicationRevision>
+    <ApplicationRevision>7</ApplicationRevision>
     <ApplicationVersion>0.3.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
@@ -281,6 +281,12 @@
     <Resource Include="Resources\Icon.png" />
   </ItemGroup>
   <ItemGroup>
+    <FileAssociation Include=".vp">
+      <Visible>False</Visible>
+      <Description>Volition Package</Description>
+      <Progid>VP</Progid>
+      <DefaultIcon>Resources\Icon.ico</DefaultIcon>
+    </FileAssociation>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <Import Project="$(SolutionDir)\.nuget\nuget.targets" />
