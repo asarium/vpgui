@@ -28,7 +28,7 @@
     <MapFileExtensions>true</MapFileExtensions>
     <InstallUrl>https://asarium.github.io/vpgui/update/</InstallUrl>
     <AutorunEnabled>true</AutorunEnabled>
-    <ApplicationRevision>7</ApplicationRevision>
+    <ApplicationRevision>9</ApplicationRevision>
     <ApplicationVersion>0.3.1.%2a</ApplicationVersion>
     <UseApplicationTrust>false</UseApplicationTrust>
     <PublishWizardCompleted>true</PublishWizardCompleted>
