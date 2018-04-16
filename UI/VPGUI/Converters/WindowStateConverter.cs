@@ -9,7 +9,14 @@ namespace VPGUI.Converters
     {
         public object Convert(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            throw new NotImplementedException();
+            if (value is bool)
+            {
+                return (bool) value ? WindowState.Maximized : WindowState.Normal;
+            }
+            else
+            {
+                return value;
+            }
         }
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)

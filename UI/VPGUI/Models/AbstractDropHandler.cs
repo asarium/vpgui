@@ -128,8 +128,22 @@ namespace VPGUI.Models
             return entries;
         }
 
+        public bool CanStartDrag(IDragInfo dragInfo)
+        {
+            return true;
+        }
+
         public void Dropped(IDropInfo dropInfo)
         {
+        }
+
+        public void DragCancelled()
+        {
+        }
+
+        public bool TryCatchOccurredException(Exception exception)
+        {
+            return false;
         }
 
         public void StartDrag(IDragInfo dragInfo)

@@ -5,10 +5,10 @@
     <Setting Name="ExtractLocation" Type="VPGUI.Utilities.Settings.ExtractLocation" Scope="User">
       <Value Profile="(Default)">WorkingDir</Value>
     </Setting>
-    <Setting Name="Theme" Type="MahApps.Metro.Theme" Scope="User">
+    <Setting Name="ThemeStr" Type="System.String" Scope="User">
       <Value Profile="(Default)">Dark</Value>
     </Setting>
-    <Setting Name="ThemeAccent" Type="MahApps.Metro.Accent" Scope="User">
+    <Setting Name="ThemeAccentStr" Type="System.String" Scope="User">
       <Value Profile="(Default)" />
     </Setting>
     <Setting Name="CreateBackups" Type="System.Boolean" Scope="User">

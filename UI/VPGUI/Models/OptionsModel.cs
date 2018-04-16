@@ -5,6 +5,7 @@ using System.Linq;
 using System.Runtime.CompilerServices;
 using System.Windows;
 using MahApps.Metro;
+using MahApps.Metro.Controls;
 using VPGUI.Properties;
 using VPGUI.Utilities.Settings;
 
@@ -14,6 +15,7 @@ namespace VPGUI.Models
     {
         private readonly Settings _settings;
         private AccentView _currentAccentView;
+        private ThemeView _currentThemeView;
 
         public OptionsModel() : this(Settings.Default)
         {
@@ -25,37 +27,42 @@ namespace VPGUI.Models
 
             this._settings.PropertyChanged += this.SettingsOnPropertyChanged;
 
-            this.AvailableAccents = ThemeManager.DefaultAccents.Select(item => new AccentView(item));
-            this._currentAccentView = this.AvailableAccents.First(item => item.Accent == this._settings.ThemeAccent);
+            this.AvailableAccents = ThemeManager.Accents.Select(item => new AccentView(item));
+            this._currentAccentView = this.AvailableAccents.First(item => item.Accent.Name == this._settings.Accent.Name);
+
+            this.AvailableThemes = ThemeManager.AppThemes.Select(item => new ThemeView(item));
+            this._currentThemeView = this.AvailableThemes.First(item => item.Theme.Name == this._settings.Theme.Name);
         }
 
-        public Theme Theme
+        public ThemeView Theme
         {
-            get { return this._settings.Theme; }
+            get => _currentThemeView;
 
             set
             {
-                if (this.Theme != value)
+                if (!Equals(_currentThemeView, value))
                 {
-                    this._settings.Theme = value;
+                    this._settings.Theme = value.Theme;
                 }
             }
         }
 
         public AccentView ThemeAccent
         {
-            get { return this._currentAccentView; }
+            get => this._currentAccentView;
 
             set
             {
                 if (!Equals(this._currentAccentView, value))
                 {
-                    this._settings.ThemeAccent = value.Accent;
+                    this._settings.Accent = value.Accent;
                 }
             }
         }
 
         public IEnumerable<AccentView> AvailableAccents { get; private set; }
+
+        public IEnumerable<ThemeView> AvailableThemes { get; private set; }
 
         public ExtractLocation ExtractLocation
         {
@@ -164,9 +171,18 @@ namespace VPGUI.Models
 
         private void SettingsOnPropertyChanged(object sender, PropertyChangedEventArgs e)
         {
-            if (e.PropertyName == "ThemeAccent")
+            if (e.PropertyName == "ThemeAccentStr")
             {
-                this._currentAccentView = this.AvailableAccents.First(item => item.Accent == this._settings.ThemeAccent);
+                this._currentAccentView = this.AvailableAccents.First(item => item.Accent.Name == this._settings.Accent.Name);
+                OnPropertyChanged("ThemeAccent");
+                return;
+            }
+            if (e.PropertyName == "ThemeStr")
+            {
+                this._currentThemeView =
+                    this.AvailableThemes.First(item => item.Theme.Name == this._settings.Accent.Name);
+                OnPropertyChanged("Theme");
+                return;
             }
 
             this.OnPropertyChanged(e.PropertyName);
@@ -218,6 +234,49 @@ namespace VPGUI.Models
             }
 
             return this.Accent.Name == ((AccentView) obj).Name;
+        }
+    }
+
+    public class ThemeView
+    {
+        public readonly AppTheme Theme;
+
+        public ThemeView(AppTheme theme)
+        {
+            Theme = theme;
+        }
+
+        public string Name
+        {
+            get
+            {
+                if (Theme.Name.StartsWith("Base"))
+                {
+                    return Theme.Name.Substring("Base".Length);
+                }
+                else
+                {
+                    return Theme.Name;
+                }
+            }
+        }
+
+        protected bool Equals(ThemeView other)
+        {
+            return Equals(Theme, other.Theme);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != this.GetType()) return false;
+            return Equals((ThemeView) obj);
+        }
+
+        public override int GetHashCode()
+        {
+            return (Theme != null ? Theme.GetHashCode() : 0);
         }
     }
 }

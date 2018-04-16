@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.Configuration;
+using MahApps.Metro;
 
 namespace VPGUI.Properties
 {
@@ -11,14 +12,16 @@ namespace VPGUI.Properties
     //  The SettingsSaving event is raised before the setting values are saved.
     public sealed partial class Settings
     {
-        private void SettingChangingEventHandler(object sender, SettingChangingEventArgs e)
+        public AppTheme Theme
         {
-            // Add code to handle the SettingChangingEvent event here.
+            get => ThemeManager.GetAppTheme(ThemeStr) ?? ThemeManager.GetAppTheme("BaseDark");
+            set => ThemeStr = value.Name;
         }
 
-        private void SettingsSavingEventHandler(object sender, CancelEventArgs e)
+        public Accent Accent
         {
-            // Add code to handle the SettingsSaving event here.
+            get => ThemeManager.GetAccent(ThemeAccentStr);
+            set => ThemeAccentStr = value.Name;
         }
     }
 }

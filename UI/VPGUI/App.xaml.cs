@@ -45,8 +45,6 @@ namespace VPGUI
 
             this.MainWindow = new MainWindow();
 
-            ThemeManager.ChangeTheme(this.MainWindow, Settings.Default.ThemeAccent, Settings.Default.Theme);
-
             var model = new MainModel((IInteractionService) this.MainWindow);
             if (vpPath != null)
             {
@@ -58,13 +56,15 @@ namespace VPGUI
             MainWindow.WindowState = Settings.Default.Maximized ? WindowState.Maximized : WindowState.Normal;
 
             this.MainWindow.Show();
+
+            ThemeManager.ChangeAppStyle(this.MainWindow, Settings.Default.Accent, Settings.Default.Theme);
         }
 
         private void InitializeSettings()
         {
-            if (Settings.Default.ThemeAccent == null)
+            if (Settings.Default.Accent == null)
             {
-                Settings.Default.ThemeAccent = ThemeManager.DefaultAccents.First(a => a.Name == "Blue");
+                Settings.Default.Accent = ThemeManager.Accents.First(a => a.Name == "Blue");
             }
 
             if (Settings.Default.TempPath.Length <= 0 || !Directory.Exists(Settings.Default.TempPath))
@@ -84,9 +84,9 @@ namespace VPGUI
         {
             var settings = sender as Settings;
 
-            if (settings != null && (e.PropertyName == "Theme" || e.PropertyName == "ThemeAccent"))
+            if (settings != null && (e.PropertyName == "ThemeStr" || e.PropertyName == "ThemeAccentStr"))
             {
-                ThemeManager.ChangeTheme(this.MainWindow, settings.ThemeAccent, settings.Theme);
+                ThemeManager.ChangeAppStyle(this.MainWindow, settings.Accent, settings.Theme);
             }
         }
 

@@ -57,8 +57,8 @@
             </ItemsControl>
 
             <TextBox Grid.Column="1" Grid.Row="0" Name="SearchTextBox"
-                     controls:TextboxHelper.Watermark="Search"
-                     controls:TextboxHelper.ClearTextButton="True"
+                     controls:TextBoxHelper.Watermark="Search"
+                     controls:TextBoxHelper.ClearTextButton="True"
                      VerticalAlignment="Center" HorizontalAlignment="Stretch"
                      VerticalContentAlignment="Center" Margin="3"
                      Text="{Binding DirectoryListModel.SearchText, Mode=TwoWay, Delay=50, UpdateSourceTrigger=PropertyChanged}" />

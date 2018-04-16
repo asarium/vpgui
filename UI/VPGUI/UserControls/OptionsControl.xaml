@@ -1,23 +1,23 @@
 ﻿<UserControl
-             xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
-             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-             xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006" 
-             xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
-             xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
-             xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
-             xmlns:models="clr-namespace:VPGUI.Models" x:Class="VPGUI.UserControls.OptionsControl"
-             xmlns:e="clr-namespace:EnumTools;assembly=EnumTools"
-             xmlns:settings="clr-namespace:VPGUI.Utilities.Settings"
-             mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
-             d:DesignHeight="100" d:DesignWidth="500">
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:metro="clr-namespace:MahApps.Metro;assembly=MahApps.Metro"
+    xmlns:controls="clr-namespace:MahApps.Metro.Controls;assembly=MahApps.Metro"
+    xmlns:models="clr-namespace:VPGUI.Models" x:Class="VPGUI.UserControls.OptionsControl"
+    xmlns:e="clr-namespace:EnumTools;assembly=EnumTools"
+    xmlns:settings="clr-namespace:VPGUI.Utilities.Settings"
+    mc:Ignorable="d" d:DataContext="{d:DesignInstance models:MainModel}"
+    d:DesignHeight="100" d:DesignWidth="500">
     <UserControl.Resources>
         <ResourceDictionary>
             <ResourceDictionary.MergedDictionaries>
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Fonts.xaml" />
                 <ResourceDictionary Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.xaml" />
-                <ResourceDictionary 
+                <ResourceDictionary
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.AnimatedSingleRowTabControl.xaml" />
-                <ResourceDictionary 
+                <ResourceDictionary
                     Source="pack://application:,,,/MahApps.Metro;component/Styles/Controls.ContextMenu.xaml" />
             </ResourceDictionary.MergedDictionaries>
         </ResourceDictionary>
@@ -25,11 +25,11 @@
     <ScrollViewer ScrollViewer.VerticalScrollBarVisibility="Auto">
         <Grid>
             <Grid.RowDefinitions>
-                <RowDefinition Height="Auto"/>
-                <RowDefinition Height="Auto"/>
+                <RowDefinition Height="Auto" />
+                <RowDefinition Height="Auto" />
             </Grid.RowDefinitions>
             <WrapPanel Orientation="Horizontal" Grid.Row="0" DataContext="{Binding Options}">
-                <GroupBox Header="Appearance">
+                <GroupBox Header="Appearance" Margin="5">
                     <Grid Width="300">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -43,20 +43,25 @@
 
                         <Label Content="Theme:" Grid.Column="0" Grid.Row="0" VerticalAlignment="Center" />
                         <ComboBox Grid.Column="1" Grid.Row="0" Margin="5" SelectedValue="{Binding Theme, Mode=TwoWay}"
-                              SelectedValuePath="Value">
-                            <ComboBox.ItemsSource>
-                                <e:EnumItemList EnumType="{x:Type metro:Theme}" />
-                            </ComboBox.ItemsSource>
+                                  ItemsSource="{Binding AvailableThemes, Mode=OneWay}">
+                            <ComboBox.ItemTemplate>
+                                <DataTemplate DataType="{x:Type metro:AppTheme}">
+                                    <TextBlock Text="{Binding Name, Mode=OneTime}" Margin="3, 0, 3, 0" />
+                                </DataTemplate>
+                            </ComboBox.ItemTemplate>
                         </ComboBox>
 
                         <Label Content="Theme Color:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="5" ItemsSource="{Binding AvailableAccents, Mode=OneWay}"
-                              SelectedValue="{Binding ThemeAccent, Mode=TwoWay}" HorizontalContentAlignment="Stretch">
+                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="5"
+                                  ItemsSource="{Binding AvailableAccents, Mode=OneWay}"
+                                  SelectedValue="{Binding ThemeAccent, Mode=TwoWay}"
+                                  HorizontalContentAlignment="Stretch">
                             <ComboBox.ItemTemplate>
                                 <DataTemplate DataType="{x:Type models:AccentView}">
-                                    <Grid Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor,
+                                    <Grid
+                                        Width="{Binding ActualWidth, RelativeSource={RelativeSource FindAncestor,
                                       AncestorType={x:Type ComboBoxItem}}, Mode=OneTime}"
-                                      Background="{Binding Resources[AccentColorBrush], Mode=OneTime}">
+                                        Background="{Binding Resources[AccentColorBrush], Mode=OneTime}">
                                         <TextBlock Text="{Binding Name, Mode=OneTime}" Margin="3, 0, 3, 0" />
                                     </Grid>
                                 </DataTemplate>
@@ -64,8 +69,8 @@
                         </ComboBox>
                     </Grid>
                 </GroupBox>
-            
-                <GroupBox Header="File handling">
+
+                <GroupBox Header="File handling" Margin="5">
                     <Grid Width="300">
                         <Grid.ColumnDefinitions>
                             <ColumnDefinition Width="Auto" />
@@ -77,14 +82,18 @@
                             <RowDefinition Height="Auto" />
                             <RowDefinition Height="Auto" />
                         </Grid.RowDefinitions>
-                        
-                        <controls:ToggleSwitch IsChecked="{Binding CreateBackups}" Grid.Column="0" Grid.Row="0" Grid.ColumnSpan="2" VerticalAlignment="Center"
-                                               HorizontalAlignment="Stretch" OnLabel="Enabled" OffLabel="Disabled" Header="Backup creation" 
+
+                        <controls:ToggleSwitch IsChecked="{Binding CreateBackups}" Grid.Column="0" Grid.Row="0"
+                                               Grid.ColumnSpan="2" VerticalAlignment="Center"
+                                               HorizontalAlignment="Stretch" OnLabel="Enabled" OffLabel="Disabled"
+                                               Header="Backup creation"
                                                Foreground="{DynamicResource BlackBrush}" />
 
                         <Label Content="Extraction Location:" Grid.Column="0" Grid.Row="1" VerticalAlignment="Center" />
-                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="0, 3" SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
-                              SelectedValuePath="Value" ToolTip="Specifies the location where files are extracted before they are opened"
+                        <ComboBox Grid.Column="1" Grid.Row="1" Margin="0, 3"
+                                  SelectedValue="{Binding ExtractLocation, Mode=TwoWay}"
+                                  SelectedValuePath="Value"
+                                  ToolTip="Specifies the location where files are extracted before they are opened"
                                   HorizontalAlignment="Stretch">
                             <ComboBox.ItemsSource>
                                 <e:EnumItemList EnumType="{x:Type settings:ExtractLocation}">
@@ -92,33 +101,35 @@
                                     <e:EnumItem Value="VpLocation" Text="In the VP directory"
                                                 DisplayValue="The file will be placed at the path it had in the VP-file" />
                                     <e:EnumItem Value="TempPath" Text="In the temporary path"
-                                                DisplayValue="This path can be changed below"/>
+                                                DisplayValue="This path can be changed below" />
                                 </e:EnumItemList>
                             </ComboBox.ItemsSource>
                             <ComboBox.ItemTemplate>
-                                <DataTemplate DataType="{x:Type e:EnumItem}" >
-                                    <TextBlock Text="{Binding Text, Mode=OneTime}" ToolTip="{Binding DisplayValue, Mode=OneTime}" />
+                                <DataTemplate DataType="{x:Type e:EnumItem}">
+                                    <TextBlock Text="{Binding Text, Mode=OneTime}"
+                                               ToolTip="{Binding DisplayValue, Mode=OneTime}" />
                                 </DataTemplate>
                             </ComboBox.ItemTemplate>
                         </ComboBox>
 
                         <Label Content="Temporary path:" Grid.Column="0" Grid.Row="2" VerticalAlignment="Center" />
-                        <TextBox Text="{Binding TempPath, Mode=TwoWay}" Margin="0, 3" Grid.Column="1" Grid.Row="2" 
+                        <TextBox Text="{Binding TempPath, Mode=TwoWay}" Margin="0, 3" Grid.Column="1" Grid.Row="2"
                                  PreviewMouseLeftButtonUp="TempPath_OnPreviewMouseLeftButtonUp"
                                  Focusable="False" HorizontalAlignment="Stretch" />
                     </Grid>
                 </GroupBox>
 
-                <GroupBox Header="Updates" MinWidth="200" Width="200">
+                <GroupBox Header="Updates" MinWidth="200" Width="200" Margin="5">
                     <Grid>
                         <controls:ToggleSwitch IsChecked="{Binding CheckForUpdates}"
-                                               HorizontalAlignment="Stretch" OnLabel="Check" OffLabel="Don't check" Header="Update check" 
+                                               HorizontalAlignment="Stretch" OnLabel="Check" OffLabel="Don't check"
+                                               Header="Update check"
                                                Foreground="{DynamicResource BlackBrush}" />
                     </Grid>
                 </GroupBox>
             </WrapPanel>
-            
-            <Button Content="Go back" Grid.Row="1" Margin="7" HorizontalAlignment="Right" 
+
+            <Button Content="Go back" Grid.Row="1" Margin="7" HorizontalAlignment="Right"
                     VerticalAlignment="Center" Command="{Binding OptionsCommand}" />
         </Grid>
     </ScrollViewer>
